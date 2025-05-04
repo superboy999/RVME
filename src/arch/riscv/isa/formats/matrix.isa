@@ -1,0 +1,102 @@
+// ==========================================
+// Author: cwq
+// Last Date: 2023/11/27
+// Description: Now just include: arithmetic 
+// multiplier(int8), loadstore, configuration
+// ==========================================
+
+
+def template MatrixMultiplyConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(constructor)s;
+        flags[IsMatrixMul] = true;
+    }
+}};
+
+def template MatrixMemConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        flags[IsMatrixMem] = true;
+    }
+}};
+
+
+def template MatrixCfgConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        flags[IsMatrixCFG] = true;
+    }
+}};
+
+def template MatrixCfgiConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        %(imm_code)s;
+        flags[IsMatrixCFGI] = true;
+    }
+}};
+
+// Basic instruction class execute method template.
+def template MatrixExecute{{
+    Fault
+    %(class_name)s::execute(
+        ExecContext *xc, trace::InstRecord *traceData) const
+    {
+        %(op_decl)s;
+        %(op_rd)s;
+        %(code)s;
+        %(op_wb)s;
+        panic("Matrix instruction had it's execute() called!");
+        return NoFault;
+    }
+}};
+
+// Generate the Code Blocks from templates
+def format MatrixMultiplyOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixMultiplyOp', {'code': code}, flags)
+    header_output = BasicDeclare.subst(iop)
+    decoder_output = MatrixMultiplyConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixMemOp(code, *flags) {{
+    regs = ['srcRegIdx(0)', 'srcRegIdx(1)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixMemOp', {'code': code,'regs': ','.join(regs)}, flags)
+    header_output = BasicDeclare.subst(iop)
+    decoder_output = MatrixMemConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixCfgOp(code, *flags) {{
+    regs = ['destRegIdx(0)', 'srcRegIdx(0)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixCfgOp', {'code': code,'regs': ','.join(regs)}, flags)
+    header_output = BasicDeclare.subst(iop)
+    decoder_output = MatrixCfgConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixCfgIOp(code, *flags) {{
+    imm_code = """
+                uimm = MUIMM7;
+               """
+    regs = ['destRegIdx(0)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixCfgIOp', {'code': code, 'imm_code': imm_code, 'regs': ','.join(regs)}, flags)
+    header_output = BasicDeclare.subst(iop)
+    decoder_output = MatrixCfgiConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};

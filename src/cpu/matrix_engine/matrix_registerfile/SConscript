@@ -1,0 +1,9 @@
+Import('*')
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('matrix_reg.py', sim_objects=['MatrixRF'])
+Source('matrix_reg.cc')
+
+DebugFlag('MatrixRF')

@@ -1,0 +1,9 @@
+Import('*')
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('reorder_buffer.py', sim_objects=['ReorderBuffer'])
+Source('reorder_buffer.cc')
+
+DebugFlag('ReorderBuffer')

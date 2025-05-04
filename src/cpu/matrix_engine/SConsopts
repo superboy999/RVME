@@ -1,0 +1,4 @@
+Import('*')
+
+sticky_vars.Add(BoolVariable('BUILD_MATRIX_ENGINE', 'Build the RISCV Matrix Engine model',
+                             True))

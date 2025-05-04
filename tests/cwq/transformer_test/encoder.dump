@@ -1,0 +1,1288 @@
+
+encoder.elf:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+00000000000100b0 <main>:
+    madd(1, 4, 5);
+    mstb(1, (uint64_t *)start_addr_C+1*4*8*stride, stride);
+}
+
+int main()
+{
+   100b0:	7159                	addi	sp,sp,-112
+   100b2:	e8ca                	sd	s2,80(sp)
+   100b4:	00185937          	lui	s2,0x185
+   100b8:	eca6                	sd	s1,88(sp)
+   100ba:	e0d2                	sd	s4,64(sp)
+   100bc:	fc56                	sd	s5,56(sp)
+   100be:	00184a37          	lui	s4,0x184
+   100c2:	00180ab7          	lui	s5,0x180
+   100c6:	f85a                	sd	s6,48(sp)
+   100c8:	02090913          	addi	s2,s2,32 # 185020 <token>
+   100cc:	6489                	lui	s1,0x2
+    //================================================
+    for (uint8_t j = 0; j < 32; j++){
+   100ce:	6b05                	lui	s6,0x1
+{
+   100d0:	f0a2                	sd	s0,96(sp)
+   100d2:	e4ce                	sd	s3,72(sp)
+   100d4:	020a8413          	addi	s0,s5,32 # 180020 <Q1>
+   100d8:	020a0993          	addi	s3,s4,32 # 184020 <WQ>
+   100dc:	f486                	sd	ra,104(sp)
+   100de:	f45e                	sd	s7,40(sp)
+   100e0:	f062                	sd	s8,32(sp)
+   100e2:	ec66                	sd	s9,24(sp)
+   100e4:	e86a                	sd	s10,16(sp)
+   100e6:	e46e                	sd	s11,8(sp)
+   100e8:	94ca                	add	s1,s1,s2
+   100ea:	020a8a93          	addi	s5,s5,32
+   100ee:	020a0a13          	addi	s4,s4,32
+    for (uint8_t j = 0; j < 32; j++){
+   100f2:	800b0b13          	addi	s6,s6,-2048 # 800 <main-0xf8b0>
+        whole_matmul(token[0][j], WQ[j], Q1[j]);
+   100f6:	8656                	mv	a2,s5
+   100f8:	85d2                	mv	a1,s4
+   100fa:	854a                	mv	a0,s2
+    for (uint8_t j = 0; j < 32; j++){
+   100fc:	10090913          	addi	s2,s2,256
+        whole_matmul(token[0][j], WQ[j], Q1[j]);
+   10100:	508000ef          	jal	ra,10608 <whole_matmul>
+    for (uint8_t j = 0; j < 32; j++){
+   10104:	9a5a                	add	s4,s4,s6
+   10106:	200a8a93          	addi	s5,s5,512
+   1010a:	ff2496e3          	bne	s1,s2,100f6 <main+0x46>
+   1010e:	0017c937          	lui	s2,0x17c
+   10112:	6b41                	lui	s6,0x10
+    }
+
+    for (uint8_t j = 0; j < 32; j++){
+   10114:	6a85                	lui	s5,0x1
+   10116:	02090a13          	addi	s4,s2,32 # 17c020 <Q2>
+   1011a:	9b4e                	add	s6,s6,s3
+    for (uint8_t j = 0; j < 32; j++){
+   1011c:	02090913          	addi	s2,s2,32
+    for (uint8_t j = 0; j < 32; j++){
+   10120:	800a8a93          	addi	s5,s5,-2048 # 800 <main-0xf8b0>
+        whole_matmul(token[1][j], WQ[j], Q2[j]);
+   10124:	864a                	mv	a2,s2
+   10126:	85ce                	mv	a1,s3
+   10128:	8526                	mv	a0,s1
+    for (uint8_t j = 0; j < 32; j++){
+   1012a:	99d6                	add	s3,s3,s5
+        whole_matmul(token[1][j], WQ[j], Q2[j]);
+   1012c:	4dc000ef          	jal	ra,10608 <whole_matmul>
+    for (uint8_t j = 0; j < 32; j++){
+   10130:	10048493          	addi	s1,s1,256 # 2100 <main-0xdfb0>
+   10134:	20090913          	addi	s2,s2,512
+   10138:	ff3b16e3          	bne	s6,s3,10124 <main+0x74>
+   1013c:	6491                	lui	s1,0x4
+   1013e:	94a2                	add	s1,s1,s0
+    }
+
+    for (uint8_t i = 0; i < 32; i++){
+        whole_madd(Q1[i], Q1[i], Q2[i]);
+   10140:	8652                	mv	a2,s4
+   10142:	85a2                	mv	a1,s0
+   10144:	8522                	mv	a0,s0
+    for (uint8_t i = 0; i < 32; i++){
+   10146:	20040413          	addi	s0,s0,512
+        whole_madd(Q1[i], Q1[i], Q2[i]);
+   1014a:	572000ef          	jal	ra,106bc <whole_madd>
+    for (uint8_t i = 0; i < 32; i++){
+   1014e:	200a0a13          	addi	s4,s4,512
+   10152:	fe8497e3          	bne	s1,s0,10140 <main+0x90>
+   10156:	0017b4b7          	lui	s1,0x17b
+   1015a:	6b05                	lui	s6,0x1
+   1015c:	0016a9b7          	lui	s3,0x16a
+   10160:	02048a93          	addi	s5,s1,32 # 17b020 <QQ1>
+   10164:	800b0b13          	addi	s6,s6,-2048 # 800 <main-0xf8b0>
+   10168:	0017aa37          	lui	s4,0x17a
+   1016c:	02098413          	addi	s0,s3,32 # 16a020 <QKT1>
+   10170:	020a0a13          	addi	s4,s4,32 # 17a020 <K1>
+   10174:	016a8933          	add	s2,s5,s6
+   10178:	02098993          	addi	s3,s3,32
+   1017c:	02048493          	addi	s1,s1,32
+    }
+    // 以上周期乘以8就算出来Q了，然后乘以3就得到QKV
+    //接下来算Q*KT
+    for(uint8_t j =0; j < 8; j++){
+        whole_matmul(QQ1[0][j], K1[0][j], QKT1[j]);
+   10180:	864e                	mv	a2,s3
+   10182:	85d2                	mv	a1,s4
+   10184:	8526                	mv	a0,s1
+    for(uint8_t j =0; j < 8; j++){
+   10186:	10048493          	addi	s1,s1,256
+        whole_matmul(QQ1[0][j], K1[0][j], QKT1[j]);
+   1018a:	47e000ef          	jal	ra,10608 <whole_matmul>
+    for(uint8_t j =0; j < 8; j++){
+   1018e:	100a0a13          	addi	s4,s4,256
+   10192:	99da                	add	s3,s3,s6
+   10194:	fe9916e3          	bne	s2,s1,10180 <main+0xd0>
+   10198:	0015a9b7          	lui	s3,0x15a
+   1019c:	0017ba37          	lui	s4,0x17b
+   101a0:	6785                	lui	a5,0x1
+    }
+    
+    for(uint8_t j =0; j < 8; j++){
+   101a2:	6b05                	lui	s6,0x1
+   101a4:	02098493          	addi	s1,s3,32 # 15a020 <QKT2>
+   101a8:	820a0a13          	addi	s4,s4,-2016 # 17a820 <K1+0x800>
+   101ac:	9abe                	add	s5,s5,a5
+    for(uint8_t j =0; j < 8; j++){
+   101ae:	02098993          	addi	s3,s3,32
+    for(uint8_t j =0; j < 8; j++){
+   101b2:	800b0b13          	addi	s6,s6,-2048 # 800 <main-0xf8b0>
+        whole_matmul(QQ1[1][j], K1[1][j], QKT2[j]);
+   101b6:	864e                	mv	a2,s3
+   101b8:	85d2                	mv	a1,s4
+   101ba:	854a                	mv	a0,s2
+    for(uint8_t j =0; j < 8; j++){
+   101bc:	10090913          	addi	s2,s2,256
+        whole_matmul(QQ1[1][j], K1[1][j], QKT2[j]);
+   101c0:	448000ef          	jal	ra,10608 <whole_matmul>
+    for(uint8_t j =0; j < 8; j++){
+   101c4:	100a0a13          	addi	s4,s4,256
+   101c8:	99da                	add	s3,s3,s6
+   101ca:	ff2a96e3          	bne	s5,s2,101b6 <main+0x106>
+   101ce:	69c1                	lui	s3,0x10
+    }
+
+    for (uint8_t i = 0; i < 32; i++){
+   101d0:	6905                	lui	s2,0x1
+   101d2:	99a2                	add	s3,s3,s0
+   101d4:	80090913          	addi	s2,s2,-2048 # 800 <main-0xf8b0>
+        whole_madd(QKT1[i], QKT2[i], QKT1[i]);
+   101d8:	8622                	mv	a2,s0
+   101da:	85a6                	mv	a1,s1
+   101dc:	8522                	mv	a0,s0
+    for (uint8_t i = 0; i < 32; i++){
+   101de:	944a                	add	s0,s0,s2
+        whole_madd(QKT1[i], QKT2[i], QKT1[i]);
+   101e0:	4dc000ef          	jal	ra,106bc <whole_madd>
+    for (uint8_t i = 0; i < 32; i++){
+   101e4:	94ca                	add	s1,s1,s2
+   101e6:	fe8999e3          	bne	s3,s0,101d8 <main+0x128>
+   101ea:	00156937          	lui	s2,0x156
+   101ee:	001519b7          	lui	s3,0x151
+   101f2:	02090a13          	addi	s4,s2,32 # 156020 <QK1>
+   101f6:	00155ab7          	lui	s5,0x155
+   101fa:	6409                	lui	s0,0x2
+   101fc:	02098493          	addi	s1,s3,32 # 151020 <QKV1>
+   10200:	020a8a93          	addi	s5,s5,32 # 155020 <V>
+   10204:	9452                	add	s0,s0,s4
+   10206:	02098993          	addi	s3,s3,32
+   1020a:	02090913          	addi	s2,s2,32
+    }
+    // 以上周期乘以4，算到QKT
+    // 
+    for (uint8_t j = 0; j < 32; j++){
+        whole_matmul(QK1[0][j], V[0][j], QKV1[j]);
+   1020e:	864e                	mv	a2,s3
+   10210:	85d6                	mv	a1,s5
+   10212:	854a                	mv	a0,s2
+    for (uint8_t j = 0; j < 32; j++){
+   10214:	10090913          	addi	s2,s2,256
+        whole_matmul(QK1[0][j], V[0][j], QKV1[j]);
+   10218:	3f0000ef          	jal	ra,10608 <whole_matmul>
+    for (uint8_t j = 0; j < 32; j++){
+   1021c:	100a8a93          	addi	s5,s5,256
+   10220:	20098993          	addi	s3,s3,512
+   10224:	ff2415e3          	bne	s0,s2,1020e <main+0x15e>
+   10228:	0014d937          	lui	s2,0x14d
+   1022c:	001569b7          	lui	s3,0x156
+   10230:	6791                	lui	a5,0x4
+   10232:	02090a93          	addi	s5,s2,32 # 14d020 <QKV2>
+   10236:	82098993          	addi	s3,s3,-2016 # 155820 <V+0x800>
+   1023a:	9a3e                	add	s4,s4,a5
+   1023c:	02090913          	addi	s2,s2,32
+    }
+
+    for (uint8_t j = 0; j < 32; j++){
+        whole_matmul(QK1[1][j], V[1][j], QKV2[j]);
+   10240:	864a                	mv	a2,s2
+   10242:	85ce                	mv	a1,s3
+   10244:	8522                	mv	a0,s0
+    for (uint8_t j = 0; j < 32; j++){
+   10246:	10040413          	addi	s0,s0,256 # 2100 <main-0xdfb0>
+        whole_matmul(QK1[1][j], V[1][j], QKV2[j]);
+   1024a:	3be000ef          	jal	ra,10608 <whole_matmul>
+    for (uint8_t j = 0; j < 32; j++){
+   1024e:	10098993          	addi	s3,s3,256
+   10252:	20090913          	addi	s2,s2,512
+   10256:	fe8a15e3          	bne	s4,s0,10240 <main+0x190>
+   1025a:	6411                	lui	s0,0x4
+   1025c:	9426                	add	s0,s0,s1
+    }
+
+    for (uint8_t i = 0; i < 32; i++){
+        whole_madd(QKV1[i], QKV2[i], QKV1[i]);
+   1025e:	8626                	mv	a2,s1
+   10260:	85d6                	mv	a1,s5
+   10262:	8526                	mv	a0,s1
+    for (uint8_t i = 0; i < 32; i++){
+   10264:	20048493          	addi	s1,s1,512
+        whole_madd(QKV1[i], QKV2[i], QKV1[i]);
+   10268:	454000ef          	jal	ra,106bc <whole_madd>
+    for (uint8_t i = 0; i < 32; i++){
+   1026c:	200a8a93          	addi	s5,s5,512
+   10270:	fe8497e3          	bne	s1,s0,1025e <main+0x1ae>
+   10274:	00121c37          	lui	s8,0x121
+   10278:	020c0913          	addi	s2,s8,32 # 121020 <CONC1>
+    }
+
+    // 以上周期乘以4，算到QKV
+    //以上所有时间乘以8，得到8个头的周期======================
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   1027c:	6c85                	lui	s9,0x1
+   1027e:	001499b7          	lui	s3,0x149
+   10282:	00020a37          	lui	s4,0x20
+   10286:	00141bb7          	lui	s7,0x141
+   1028a:	00145b37          	lui	s6,0x145
+   1028e:	02098993          	addi	s3,s3,32 # 149020 <CONC>
+   10292:	9a4a                	add	s4,s4,s2
+    for (uint8_t i = 0; i < 32; i++){
+   10294:	020c0c13          	addi	s8,s8,32
+   10298:	020b8b93          	addi	s7,s7,32 # 141020 <WFC>
+   1029c:	020b0b13          	addi	s6,s6,32 # 145020 <WFC+0x4000>
+        for (uint8_t j = 0; j < 8; j++){
+   102a0:	800c8a93          	addi	s5,s9,-2048 # 800 <main-0xf8b0>
+            whole_matmul(CONC[0][i], WFC[0][8*j], CONC1[i][8*j]);
+   102a4:	84e2                	mv	s1,s8
+   102a6:	845e                	mv	s0,s7
+   102a8:	8626                	mv	a2,s1
+   102aa:	85a2                	mv	a1,s0
+   102ac:	854e                	mv	a0,s3
+        for (uint8_t j = 0; j < 8; j++){
+   102ae:	9456                	add	s0,s0,s5
+            whole_matmul(CONC[0][i], WFC[0][8*j], CONC1[i][8*j]);
+   102b0:	358000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   102b4:	20048493          	addi	s1,s1,512
+   102b8:	fe8b18e3          	bne	s6,s0,102a8 <main+0x1f8>
+    for (uint8_t i = 0; i < 32; i++){
+   102bc:	9c66                	add	s8,s8,s9
+   102be:	10098993          	addi	s3,s3,256
+   102c2:	ff8a11e3          	bne	s4,s8,102a4 <main+0x1f4>
+   102c6:	00101cb7          	lui	s9,0x101
+        }
+    }
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   102ca:	6d85                	lui	s11,0x1
+   102cc:	0014b9b7          	lui	s3,0x14b
+   102d0:	67a1                	lui	a5,0x8
+   102d2:	020c8a93          	addi	s5,s9,32 # 101020 <CONC2>
+   102d6:	02098993          	addi	s3,s3,32 # 14b020 <CONC+0x2000>
+    for (uint8_t i = 0; i < 32; i++){
+   102da:	020c8c93          	addi	s9,s9,32
+   102de:	4d01                	li	s10,0
+   102e0:	9bbe                	add	s7,s7,a5
+        for (uint8_t j = 0; j < 8; j++){
+   102e2:	800d8c13          	addi	s8,s11,-2048 # 800 <main-0xf8b0>
+   102e6:	845a                	mv	s0,s6
+            whole_matmul(CONC[1][i], WFC[1][8*j], CONC2[i][8*j]);
+   102e8:	84e6                	mv	s1,s9
+   102ea:	8626                	mv	a2,s1
+   102ec:	85a2                	mv	a1,s0
+   102ee:	854e                	mv	a0,s3
+        for (uint8_t j = 0; j < 8; j++){
+   102f0:	9462                	add	s0,s0,s8
+            whole_matmul(CONC[1][i], WFC[1][8*j], CONC2[i][8*j]);
+   102f2:	316000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   102f6:	20048493          	addi	s1,s1,512
+   102fa:	fe8b98e3          	bne	s7,s0,102ea <main+0x23a>
+    for (uint8_t i = 0; i < 32; i++){
+   102fe:	040d0d13          	addi	s10,s10,64
+   10302:	800d0793          	addi	a5,s10,-2048
+   10306:	9cee                	add	s9,s9,s11
+   10308:	10098993          	addi	s3,s3,256
+   1030c:	ffe9                	bnez	a5,102e6 <main+0x236>
+   1030e:	89d6                	mv	s3,s5
+   10310:	84ca                	mv	s1,s2
+        }
+    }
+
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   10312:	6b05                	lui	s6,0x1
+    for (uint8_t i = 0; i < 32; i++){
+   10314:	4401                	li	s0,0
+            whole_matmul(CONC1[i][8*j], CONC2[i][8*j], CONC1[i][8*j]);
+   10316:	00848633          	add	a2,s1,s0
+   1031a:	008985b3          	add	a1,s3,s0
+   1031e:	8532                	mv	a0,a2
+        for (uint8_t j = 0; j < 8; j++){
+   10320:	20040413          	addi	s0,s0,512 # 4200 <main-0xbeb0>
+            whole_matmul(CONC1[i][8*j], CONC2[i][8*j], CONC1[i][8*j]);
+   10324:	2e4000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   10328:	ff6417e3          	bne	s0,s6,10316 <main+0x266>
+    for (uint8_t i = 0; i < 32; i++){
+   1032c:	94a2                	add	s1,s1,s0
+   1032e:	99a2                	add	s3,s3,s0
+   10330:	fe9a12e3          	bne	s4,s1,10314 <main+0x264>
+        }
+    }
+    // 以上乘以8就是concat的周期
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   10334:	6485                	lui	s1,0x1
+   10336:	4401                	li	s0,0
+            whole_matmul(CONC1[i][8*j], CONC2[i][8*j], CONC1[i][8*j]);
+   10338:	00890633          	add	a2,s2,s0
+   1033c:	008a85b3          	add	a1,s5,s0
+   10340:	8532                	mv	a0,a2
+        for (uint8_t j = 0; j < 8; j++){
+   10342:	20040413          	addi	s0,s0,512
+            whole_matmul(CONC1[i][8*j], CONC2[i][8*j], CONC1[i][8*j]);
+   10346:	2c2000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   1034a:	fe9417e3          	bne	s0,s1,10338 <main+0x288>
+    for (uint8_t i = 0; i < 32; i++){
+   1034e:	9922                	add	s2,s2,s0
+   10350:	9aa2                	add	s5,s5,s0
+   10352:	ff2a12e3          	bne	s4,s2,10336 <main+0x286>
+   10356:	0005db37          	lui	s6,0x5d
+   1035a:	000fd937          	lui	s2,0xfd
+   1035e:	000dd9b7          	lui	s3,0xdd
+   10362:	000eda37          	lui	s4,0xed
+    }
+    //以上是第一个add&norm中的add
+    
+    //下面计算FF层=====================================
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 32; j++){
+   10366:	6a85                	lui	s5,0x1
+   10368:	020b0b93          	addi	s7,s6,32 # 5d020 <WFFB1>
+   1036c:	02090d13          	addi	s10,s2,32 # fd020 <FF_IN>
+    for (uint8_t i = 0; i < 32; i++){
+   10370:	020b0b13          	addi	s6,s6,32
+   10374:	02090913          	addi	s2,s2,32
+   10378:	4c01                	li	s8,0
+   1037a:	02098993          	addi	s3,s3,32 # dd020 <WFF1>
+   1037e:	020a0a13          	addi	s4,s4,32 # ed020 <WFF1+0x10000>
+        for (uint8_t j = 0; j < 32; j++){
+   10382:	800a8a93          	addi	s5,s5,-2048 # 800 <main-0xf8b0>
+    for (uint8_t i = 0; i < 32; i++){
+   10386:	6d91                	lui	s11,0x4
+   10388:	6c89                	lui	s9,0x2
+            whole_matmul(FF_IN[0][i], WFF1[0][8*j], WFFB1[i][8*j]);
+   1038a:	84da                	mv	s1,s6
+   1038c:	844e                	mv	s0,s3
+   1038e:	8626                	mv	a2,s1
+   10390:	85a2                	mv	a1,s0
+   10392:	854a                	mv	a0,s2
+        for (uint8_t j = 0; j < 32; j++){
+   10394:	9456                	add	s0,s0,s5
+            whole_matmul(FF_IN[0][i], WFF1[0][8*j], WFFB1[i][8*j]);
+   10396:	272000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 32; j++){
+   1039a:	20048493          	addi	s1,s1,512 # 1200 <main-0xeeb0>
+   1039e:	fe8a18e3          	bne	s4,s0,1038e <main+0x2de>
+    for (uint8_t i = 0; i < 32; i++){
+   103a2:	100c0c13          	addi	s8,s8,256
+   103a6:	9b6e                	add	s6,s6,s11
+   103a8:	10090913          	addi	s2,s2,256
+   103ac:	fd9c1fe3          	bne	s8,s9,1038a <main+0x2da>
+   103b0:	6d89                	lui	s11,0x2
+   103b2:	000207b7          	lui	a5,0x20
+        }
+    }
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 32; j++){
+   103b6:	6b05                	lui	s6,0x1
+   103b8:	8cde                	mv	s9,s7
+   103ba:	4c01                	li	s8,0
+   103bc:	9d6e                	add	s10,s10,s11
+   103be:	99be                	add	s3,s3,a5
+   103c0:	800b0b13          	addi	s6,s6,-2048 # 800 <main-0xf8b0>
+    for (uint8_t i = 0; i < 32; i++){
+   103c4:	6911                	lui	s2,0x4
+        for (uint8_t j = 0; j < 32; j++){
+   103c6:	018d0ab3          	add	s5,s10,s8
+   103ca:	8452                	mv	s0,s4
+    for (uint8_t i = 0; i < 32; i++){
+   103cc:	84e6                	mv	s1,s9
+            whole_matmul(FF_IN[1][i], WFF1[1][8*j], WFFB1[i][8*j]);
+   103ce:	8626                	mv	a2,s1
+   103d0:	85a2                	mv	a1,s0
+   103d2:	8556                	mv	a0,s5
+        for (uint8_t j = 0; j < 32; j++){
+   103d4:	945a                	add	s0,s0,s6
+            whole_matmul(FF_IN[1][i], WFF1[1][8*j], WFFB1[i][8*j]);
+   103d6:	232000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 32; j++){
+   103da:	20048493          	addi	s1,s1,512
+   103de:	fe8998e3          	bne	s3,s0,103ce <main+0x31e>
+    for (uint8_t i = 0; i < 32; i++){
+   103e2:	100c0c13          	addi	s8,s8,256
+   103e6:	9cca                	add	s9,s9,s2
+   103e8:	fdbc1fe3          	bne	s8,s11,103c6 <main+0x316>
+   103ec:	012b84b3          	add	s1,s7,s2
+   103f0:	000847b7          	lui	a5,0x84
+   103f4:	9bbe                	add	s7,s7,a5
+   103f6:	8926                	mv	s2,s1
+   103f8:	7a71                	lui	s4,0xffffc
+        }
+    }
+
+    for (uint8_t i = 0; i < 32; i++){
+   103fa:	6991                	lui	s3,0x4
+        for (uint8_t j = 0; j < 32; j++){
+   103fc:	01490433          	add	s0,s2,s4
+            whole_madd(WFFB1[i][j*8], WFFB1[i][8*j], WFFB1[i][8*j]);
+   10400:	8622                	mv	a2,s0
+   10402:	85a2                	mv	a1,s0
+   10404:	8522                	mv	a0,s0
+        for (uint8_t j = 0; j < 32; j++){
+   10406:	20040413          	addi	s0,s0,512
+            whole_madd(WFFB1[i][j*8], WFFB1[i][8*j], WFFB1[i][8*j]);
+   1040a:	2b2000ef          	jal	ra,106bc <whole_madd>
+        for (uint8_t j = 0; j < 32; j++){
+   1040e:	fe8919e3          	bne	s2,s0,10400 <main+0x350>
+    for (uint8_t i = 0; i < 32; i++){
+   10412:	994e                	add	s2,s2,s3
+   10414:	ff2b94e3          	bne	s7,s2,103fc <main+0x34c>
+   10418:	79f1                	lui	s3,0xffffc
+        }
+    }
+    //以上时间乘以8就是完整的计算Input*W1
+    //下面是加了第一个偏执
+    for (uint8_t i = 0; i < 32; i++){
+   1041a:	6911                	lui	s2,0x4
+        for (uint8_t j = 0; j < 32; j++){
+   1041c:	01348433          	add	s0,s1,s3
+            whole_madd(WFFB1[i][8*j], WFFB1[i][8*j], WFFB1[i][8*j]);
+   10420:	8622                	mv	a2,s0
+   10422:	85a2                	mv	a1,s0
+   10424:	8522                	mv	a0,s0
+        for (uint8_t j = 0; j < 32; j++){
+   10426:	20040413          	addi	s0,s0,512
+            whole_madd(WFFB1[i][8*j], WFFB1[i][8*j], WFFB1[i][8*j]);
+   1042a:	292000ef          	jal	ra,106bc <whole_madd>
+        for (uint8_t j = 0; j < 32; j++){
+   1042e:	fe9419e3          	bne	s0,s1,10420 <main+0x370>
+    for (uint8_t i = 0; i < 32; i++){
+   10432:	012404b3          	add	s1,s0,s2
+   10436:	fe9b93e3          	bne	s7,s1,1041c <main+0x36c>
+   1043a:	00031c37          	lui	s8,0x31
+   1043e:	020c0913          	addi	s2,s8,32 # 31020 <WC1>
+        }
+    }
+    //再计算output========
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   10442:	6c85                	lui	s9,0x1
+   10444:	00059a37          	lui	s4,0x59
+   10448:	000209b7          	lui	s3,0x20
+   1044c:	00051bb7          	lui	s7,0x51
+   10450:	00055b37          	lui	s6,0x55
+   10454:	020a0a13          	addi	s4,s4,32 # 59020 <WA>
+   10458:	99ca                	add	s3,s3,s2
+    for (uint8_t i = 0; i < 32; i++){
+   1045a:	020c0c13          	addi	s8,s8,32
+   1045e:	020b8b93          	addi	s7,s7,32 # 51020 <WB>
+   10462:	020b0b13          	addi	s6,s6,32 # 55020 <WB+0x4000>
+        for (uint8_t j = 0; j < 8; j++){
+   10466:	800c8a93          	addi	s5,s9,-2048 # 800 <main-0xf8b0>
+            whole_matmul(WA[0][i], WB[0][8*j], WC1[i][8*j]);
+   1046a:	84e2                	mv	s1,s8
+   1046c:	845e                	mv	s0,s7
+   1046e:	8626                	mv	a2,s1
+   10470:	85a2                	mv	a1,s0
+   10472:	8552                	mv	a0,s4
+        for (uint8_t j = 0; j < 8; j++){
+   10474:	9456                	add	s0,s0,s5
+            whole_matmul(WA[0][i], WB[0][8*j], WC1[i][8*j]);
+   10476:	192000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   1047a:	20048493          	addi	s1,s1,512
+   1047e:	fe8b18e3          	bne	s6,s0,1046e <main+0x3be>
+    for (uint8_t i = 0; i < 32; i++){
+   10482:	9c66                	add	s8,s8,s9
+   10484:	100a0a13          	addi	s4,s4,256
+   10488:	ff8991e3          	bne	s3,s8,1046a <main+0x3ba>
+   1048c:	6cc5                	lui	s9,0x11
+        }
+    } 
+
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   1048e:	6d85                	lui	s11,0x1
+   10490:	0005bab7          	lui	s5,0x5b
+   10494:	67a1                	lui	a5,0x8
+   10496:	020c8a13          	addi	s4,s9,32 # 11020 <WC2>
+   1049a:	020a8a93          	addi	s5,s5,32 # 5b020 <WA+0x2000>
+    for (uint8_t i = 0; i < 32; i++){
+   1049e:	020c8c93          	addi	s9,s9,32
+   104a2:	4d01                	li	s10,0
+   104a4:	9bbe                	add	s7,s7,a5
+        for (uint8_t j = 0; j < 8; j++){
+   104a6:	800d8c13          	addi	s8,s11,-2048 # 800 <main-0xf8b0>
+   104aa:	845a                	mv	s0,s6
+            whole_matmul(WA[1][i], WB[1][8*j], WC2[i][8*j]);
+   104ac:	84e6                	mv	s1,s9
+   104ae:	8626                	mv	a2,s1
+   104b0:	85a2                	mv	a1,s0
+   104b2:	8556                	mv	a0,s5
+        for (uint8_t j = 0; j < 8; j++){
+   104b4:	9462                	add	s0,s0,s8
+            whole_matmul(WA[1][i], WB[1][8*j], WC2[i][8*j]);
+   104b6:	152000ef          	jal	ra,10608 <whole_matmul>
+        for (uint8_t j = 0; j < 8; j++){
+   104ba:	20048493          	addi	s1,s1,512
+   104be:	fe8b98e3          	bne	s7,s0,104ae <main+0x3fe>
+    for (uint8_t i = 0; i < 32; i++){
+   104c2:	040d0d13          	addi	s10,s10,64
+   104c6:	800d0793          	addi	a5,s10,-2048
+   104ca:	9cee                	add	s9,s9,s11
+   104cc:	100a8a93          	addi	s5,s5,256
+   104d0:	ffe9                	bnez	a5,104aa <main+0x3fa>
+   104d2:	8ad2                	mv	s5,s4
+   104d4:	84ca                	mv	s1,s2
+        }
+    } 
+
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   104d6:	6b05                	lui	s6,0x1
+    for (uint8_t i = 0; i < 32; i++){
+   104d8:	4401                	li	s0,0
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   104da:	00848633          	add	a2,s1,s0
+   104de:	008a85b3          	add	a1,s5,s0
+   104e2:	8532                	mv	a0,a2
+        for (uint8_t j = 0; j < 8; j++){
+   104e4:	20040413          	addi	s0,s0,512
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   104e8:	1d4000ef          	jal	ra,106bc <whole_madd>
+        for (uint8_t j = 0; j < 8; j++){
+   104ec:	ff6417e3          	bne	s0,s6,104da <main+0x42a>
+    for (uint8_t i = 0; i < 32; i++){
+   104f0:	94a2                	add	s1,s1,s0
+   104f2:	9aa2                	add	s5,s5,s0
+   104f4:	fe9992e3          	bne	s3,s1,104d8 <main+0x428>
+   104f8:	8ad2                	mv	s5,s4
+   104fa:	84ca                	mv	s1,s2
+        }
+    } 
+    //以上时间乘以32就是FF的output生成========
+    //下面再加第二个偏执
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   104fc:	6b05                	lui	s6,0x1
+   104fe:	4401                	li	s0,0
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   10500:	00848633          	add	a2,s1,s0
+   10504:	008a85b3          	add	a1,s5,s0
+   10508:	8532                	mv	a0,a2
+        for (uint8_t j = 0; j < 8; j++){
+   1050a:	20040413          	addi	s0,s0,512
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   1050e:	1ae000ef          	jal	ra,106bc <whole_madd>
+        for (uint8_t j = 0; j < 8; j++){
+   10512:	ff6417e3          	bne	s0,s6,10500 <main+0x450>
+    for (uint8_t i = 0; i < 32; i++){
+   10516:	94a2                	add	s1,s1,s0
+   10518:	9aa2                	add	s5,s5,s0
+   1051a:	fe9992e3          	bne	s3,s1,104fe <main+0x44e>
+    } 
+    //以上时间就是整个FF层的时间====================================
+
+    //以下计算第二个add&norm的add
+    for (uint8_t i = 0; i < 32; i++){
+        for (uint8_t j = 0; j < 8; j++){
+   1051e:	6485                	lui	s1,0x1
+   10520:	4401                	li	s0,0
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   10522:	00890633          	add	a2,s2,s0
+   10526:	008a05b3          	add	a1,s4,s0
+   1052a:	8532                	mv	a0,a2
+        for (uint8_t j = 0; j < 8; j++){
+   1052c:	20040413          	addi	s0,s0,512
+            whole_madd(WC1[i][8*j], WC2[i][8*j], WC1[i][8*j]);
+   10530:	18c000ef          	jal	ra,106bc <whole_madd>
+        for (uint8_t j = 0; j < 8; j++){
+   10534:	fe9417e3          	bne	s0,s1,10522 <main+0x472>
+    for (uint8_t i = 0; i < 32; i++){
+   10538:	9922                	add	s2,s2,s0
+   1053a:	9a22                	add	s4,s4,s0
+   1053c:	ff2992e3          	bne	s3,s2,10520 <main+0x470>
+        }
+    } 
+    return 0;
+   10540:	70a6                	ld	ra,104(sp)
+   10542:	7406                	ld	s0,96(sp)
+   10544:	64e6                	ld	s1,88(sp)
+   10546:	6946                	ld	s2,80(sp)
+   10548:	69a6                	ld	s3,72(sp)
+   1054a:	6a06                	ld	s4,64(sp)
+   1054c:	7ae2                	ld	s5,56(sp)
+   1054e:	7b42                	ld	s6,48(sp)
+   10550:	7ba2                	ld	s7,40(sp)
+   10552:	7c02                	ld	s8,32(sp)
+   10554:	6ce2                	ld	s9,24(sp)
+   10556:	6d42                	ld	s10,16(sp)
+   10558:	6da2                	ld	s11,8(sp)
+   1055a:	4501                	li	a0,0
+   1055c:	6165                	addi	sp,sp,112
+   1055e:	8082                	ret
+
+0000000000010560 <register_fini>:
+   10560:	00000793          	li	a5,0
+   10564:	c791                	beqz	a5,10570 <register_fini+0x10>
+   10566:	00000517          	auipc	a0,0x0
+   1056a:	43c50513          	addi	a0,a0,1084 # 109a2 <__libc_fini_array>
+   1056e:	a12d                	j	10998 <atexit>
+   10570:	8082                	ret
+
+0000000000010572 <_start>:
+   10572:	00179197          	auipc	gp,0x179
+   10576:	aae18193          	addi	gp,gp,-1362 # 189020 <impure_data>
+   1057a:	78018513          	addi	a0,gp,1920 # 1897a0 <__lock___arc4random_mutex>
+   1057e:	00179617          	auipc	a2,0x179
+   10582:	2a260613          	addi	a2,a2,674 # 189820 <__BSS_END__>
+   10586:	8e09                	sub	a2,a2,a0
+   10588:	4581                	li	a1,0
+   1058a:	292000ef          	jal	ra,1081c <memset>
+   1058e:	00000517          	auipc	a0,0x0
+   10592:	40a50513          	addi	a0,a0,1034 # 10998 <atexit>
+   10596:	c519                	beqz	a0,105a4 <_start+0x32>
+   10598:	00000517          	auipc	a0,0x0
+   1059c:	40a50513          	addi	a0,a0,1034 # 109a2 <__libc_fini_array>
+   105a0:	3f8000ef          	jal	ra,10998 <atexit>
+   105a4:	20c000ef          	jal	ra,107b0 <__libc_init_array>
+   105a8:	4502                	lw	a0,0(sp)
+   105aa:	002c                	addi	a1,sp,8
+   105ac:	4601                	li	a2,0
+   105ae:	b03ff0ef          	jal	ra,100b0 <main>
+   105b2:	a2c5                	j	10792 <exit>
+
+00000000000105b4 <__do_global_dtors_aux>:
+   105b4:	1141                	addi	sp,sp,-16
+   105b6:	e022                	sd	s0,0(sp)
+   105b8:	7c818413          	addi	s0,gp,1992 # 1897e8 <completed.1>
+   105bc:	00044783          	lbu	a5,0(s0)
+   105c0:	e406                	sd	ra,8(sp)
+   105c2:	ef99                	bnez	a5,105e0 <__do_global_dtors_aux+0x2c>
+   105c4:	00000793          	li	a5,0
+   105c8:	cb89                	beqz	a5,105da <__do_global_dtors_aux+0x26>
+   105ca:	00001517          	auipc	a0,0x1
+   105ce:	a3650513          	addi	a0,a0,-1482 # 11000 <__FRAME_END__>
+   105d2:	00000097          	auipc	ra,0x0
+   105d6:	000000e7          	jalr	zero # 0 <main-0x100b0>
+   105da:	4785                	li	a5,1
+   105dc:	00f40023          	sb	a5,0(s0)
+   105e0:	60a2                	ld	ra,8(sp)
+   105e2:	6402                	ld	s0,0(sp)
+   105e4:	0141                	addi	sp,sp,16
+   105e6:	8082                	ret
+
+00000000000105e8 <frame_dummy>:
+   105e8:	00000793          	li	a5,0
+   105ec:	cf89                	beqz	a5,10606 <frame_dummy+0x1e>
+   105ee:	00179597          	auipc	a1,0x179
+   105f2:	20258593          	addi	a1,a1,514 # 1897f0 <object.0>
+   105f6:	00001517          	auipc	a0,0x1
+   105fa:	a0a50513          	addi	a0,a0,-1526 # 11000 <__FRAME_END__>
+   105fe:	00000317          	auipc	t1,0x0
+   10602:	00000067          	jr	zero # 0 <main-0x100b0>
+   10606:	8082                	ret
+
+0000000000010608 <whole_matmul>:
+                        );
+}
+
+inline static void mcfgmi(uint16_t m_value)
+{
+    __asm__ __volatile__ ("mcfgmi zero, %0"
+   10608:	1e20002b          	mcfgmi	zero,8
+    __asm__ __volatile__ ("mcfgki zero, %0"
+   1060c:	0e80002b          	mcfgki	zero,32
+    __asm__ __volatile__ ("mcfgni zero, %0"
+   10610:	2e20002b          	mcfgni	zero,8
+    }
+}
+
+inline static void mldb_m0(uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mldb m0, %0, (%1)"
+   10614:	02000793          	li	a5,32
+   10618:	08f5002b          	mldb	m0,a5,(a0)
+                            : "r"(stride), "r"(start_addr));
+}
+
+inline static void mldb_m4(uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mldb m4, %0, (%1)"
+   1061c:	08f5822b          	mldb	m4,a5,(a1)
+    mldb_m5((uint64_t *)start_addr_B+1*4*8*stride, stride);
+   10620:	6889                	lui	a7,0x2
+   10622:	01158733          	add	a4,a1,a7
+                            : "r"(stride), "r"(start_addr));
+}
+
+inline static void mldb_m5(uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mldb m5, %0, (%1)"
+   10626:	08f702ab          	mldb	m5,a5,(a4)
+    mldb_m6((uint64_t *)start_addr_B+2*4*8*stride, stride);
+   1062a:	6691                	lui	a3,0x4
+   1062c:	00d58733          	add	a4,a1,a3
+                            : "r"(stride), "r"(start_addr));
+}
+
+inline static void mldb_m6(uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mldb m6, %0, (%1)"
+   10630:	08f7032b          	mldb	m6,a5,(a4)
+    mldb_m7((uint64_t *)start_addr_B+3*4*8*stride, stride);
+   10634:	6719                	lui	a4,0x6
+   10636:	00e58833          	add	a6,a1,a4
+                            : "r"(stride), "r"(start_addr));
+}
+
+inline static void mldb_m7(uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mldb m7, %0, (%1)"
+   1063a:	08f803ab          	mldb	m7,a5,(a6)
+}
+
+//Matrix multiplication: int8 datatype, unsigned x unsigned
+inline static void matrixmul_int8_ss(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   1063e:	2080802b          	mmaqa.b	m1,m4,m0
+                            : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
+}
+
+inline static void mstb(int8_t srcMregIdx, uint64_t *start_addr, uint64_t stride)
+{
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10642:	0af600ab          	mstb	m1,a5,(a2)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   10646:	20a1002b          	mmaqa.b	m2,m5,m0
+    mstb(2, (uint64_t *)start_addr_C+1*4*8*stride, stride);
+   1064a:	01160833          	add	a6,a2,a7
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   1064e:	0af8012b          	mstb	m2,a5,(a6)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   10652:	20c1802b          	mmaqa.b	m3,m6,m0
+    mstb(3, (uint64_t *)start_addr_C+2*4*8*stride, stride);
+   10656:	96b2                	add	a3,a3,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10658:	0af681ab          	mstb	m3,a5,(a3)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   1065c:	20e0802b          	mmaqa.b	m1,m7,m0
+    mstb(4, (uint64_t *)start_addr_C+3*4*8*stride, stride);
+   10660:	9732                	add	a4,a4,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10662:	0af7022b          	mstb	m4,a5,(a4)
+    mldb_m4((uint64_t *)start_addr_B+4*4*8*stride, stride);
+   10666:	6821                	lui	a6,0x8
+   10668:	01058733          	add	a4,a1,a6
+    __asm__ __volatile__ ("mldb m4, %0, (%1)"
+   1066c:	08f7022b          	mldb	m4,a5,(a4)
+    mldb_m5((uint64_t *)start_addr_B+5*4*8*stride, stride);
+   10670:	66a9                	lui	a3,0xa
+   10672:	00d58733          	add	a4,a1,a3
+    __asm__ __volatile__ ("mldb m5, %0, (%1)"
+   10676:	08f702ab          	mldb	m5,a5,(a4)
+    mldb_m6((uint64_t *)start_addr_B+6*4*8*stride, stride);
+   1067a:	6731                	lui	a4,0xc
+   1067c:	00e58333          	add	t1,a1,a4
+    __asm__ __volatile__ ("mldb m6, %0, (%1)"
+   10680:	08f3032b          	mldb	m6,a5,(t1)
+    mldb_m7((uint64_t *)start_addr_B+7*4*8*stride, stride);
+   10684:	6339                	lui	t1,0xe
+   10686:	959a                	add	a1,a1,t1
+    __asm__ __volatile__ ("mldb m7, %0, (%1)"
+   10688:	08f583ab          	mldb	m7,a5,(a1)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   1068c:	2081002b          	mmaqa.b	m2,m4,m0
+    mstb(2, (uint64_t *)start_addr_C+4*4*8*stride, stride);
+   10690:	9832                	add	a6,a6,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10692:	0af8012b          	mstb	m2,a5,(a6)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   10696:	20a1802b          	mmaqa.b	m3,m5,m0
+    mstb(3, (uint64_t *)start_addr_C+5*4*8*stride, stride);
+   1069a:	96b2                	add	a3,a3,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   1069c:	0af681ab          	mstb	m3,a5,(a3)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   106a0:	20c0802b          	mmaqa.b	m1,m6,m0
+    mstb(1, (uint64_t *)start_addr_C+6*4*8*stride, stride);
+   106a4:	9732                	add	a4,a4,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   106a6:	0af700ab          	mstb	m1,a5,(a4)
+    __asm__ __volatile__ ("mmaqa.b m%0, m%1, m%2"
+   106aa:	20e1002b          	mmaqa.b	m2,m7,m0
+    mstb(2, (uint64_t *)start_addr_C+7*4*8*stride, stride);
+   106ae:	961a                	add	a2,a2,t1
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   106b0:	0af6012b          	mstb	m2,a5,(a2)
+    mstb(0, (uint64_t *)start_addr_m0+1*4*8*stride, stride);
+   106b4:	9546                	add	a0,a0,a7
+   106b6:	0af5002b          	mstb	m0,a5,(a0)
+}
+   106ba:	8082                	ret
+
+00000000000106bc <whole_madd>:
+    __asm__ __volatile__ ("mcfgmi zero, %0"
+   106bc:	1e20002b          	mcfgmi	zero,8
+    __asm__ __volatile__ ("mcfgki zero, %0"
+   106c0:	0e20002b          	mcfgki	zero,8
+    __asm__ __volatile__ ("mcfgni zero, %0"
+   106c4:	2e20002b          	mcfgni	zero,8
+    __asm__ __volatile__ ("mldb m2, %0, (%1)"
+   106c8:	47a1                	li	a5,8
+   106ca:	08f5012b          	mldb	m2,a5,(a0)
+    __asm__ __volatile__ ("mldb m3, %0, (%1)"
+   106ce:	08f581ab          	mldb	m3,a5,(a1)
+    mldb_m4((uint64_t *)start_addr_A+1*4*8*stride, stride);
+   106d2:	6805                	lui	a6,0x1
+   106d4:	80080713          	addi	a4,a6,-2048 # 800 <main-0xf8b0>
+   106d8:	00e50e33          	add	t3,a0,a4
+    __asm__ __volatile__ ("mldb m4, %0, (%1)"
+   106dc:	08fe022b          	mldb	m4,a5,(t3)
+    mldb_m5((uint64_t *)start_addr_B+1*4*8*stride, stride);
+   106e0:	00e58333          	add	t1,a1,a4
+    __asm__ __volatile__ ("mldb m5, %0, (%1)"
+   106e4:	08f302ab          	mldb	m5,a5,(t1)
+    mldb_m6((uint64_t *)start_addr_A+2*4*8*stride, stride);
+   106e8:	010506b3          	add	a3,a0,a6
+    __asm__ __volatile__ ("mldb m6, %0, (%1)"
+   106ec:	08f6832b          	mldb	m6,a5,(a3)
+    mldb_m7((uint64_t *)start_addr_B+2*4*8*stride, stride);
+   106f0:	010586b3          	add	a3,a1,a6
+    __asm__ __volatile__ ("mldb m7, %0, (%1)"
+   106f4:	08f683ab          	mldb	m7,a5,(a3)
+                            : "i" (srcMregIdx), "r"(stride), "r"(start_addr));
+}
+
+inline static void madd(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   106f8:	3068082b          	madd.s.mm	m0,m3,m2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   106fc:	0af6002b          	mstb	m0,a5,(a2)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   10700:	30b0882b          	madd.s.mm	m1,m5,m4
+    mstb(1, (uint64_t *)start_addr_C+1*4*8*stride, stride);
+   10704:	00e606b3          	add	a3,a2,a4
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10708:	0af680ab          	mstb	m1,a5,(a3)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   1070c:	30f8082b          	madd.s.mm	m0,m7,m6
+    mstb(0, (uint64_t *)start_addr_C+2*4*8*stride, stride);
+   10710:	9832                	add	a6,a6,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10712:	0af8002b          	mstb	m0,a5,(a6)
+    mldb_m2((uint64_t *)start_addr_A+3*4*8*stride, stride);
+   10716:	6809                	lui	a6,0x2
+   10718:	80080893          	addi	a7,a6,-2048 # 1800 <main-0xe8b0>
+   1071c:	01150733          	add	a4,a0,a7
+    __asm__ __volatile__ ("mldb m2, %0, (%1)"
+   10720:	08f7012b          	mldb	m2,a5,(a4)
+    mldb_m3((uint64_t *)start_addr_B+3*4*8*stride, stride);
+   10724:	01158733          	add	a4,a1,a7
+    __asm__ __volatile__ ("mldb m3, %0, (%1)"
+   10728:	08f701ab          	mldb	m3,a5,(a4)
+    mldb_m4((uint64_t *)start_addr_A+4*4*8*stride, stride);
+   1072c:	01050733          	add	a4,a0,a6
+    __asm__ __volatile__ ("mldb m4, %0, (%1)"
+   10730:	08f7022b          	mldb	m4,a5,(a4)
+    mldb_m5((uint64_t *)start_addr_B+4*4*8*stride, stride);
+   10734:	01058733          	add	a4,a1,a6
+    __asm__ __volatile__ ("mldb m5, %0, (%1)"
+   10738:	08f702ab          	mldb	m5,a5,(a4)
+    mldb_m6((uint64_t *)start_addr_A+5*4*8*stride, stride);
+   1073c:	670d                	lui	a4,0x3
+   1073e:	80070713          	addi	a4,a4,-2048 # 2800 <main-0xd8b0>
+   10742:	00e50eb3          	add	t4,a0,a4
+    __asm__ __volatile__ ("mldb m6, %0, (%1)"
+   10746:	08fe832b          	mldb	m6,a5,(t4)
+    mldb_m7((uint64_t *)start_addr_B+5*4*8*stride, stride);
+   1074a:	00e58eb3          	add	t4,a1,a4
+    __asm__ __volatile__ ("mldb m7, %0, (%1)"
+   1074e:	08fe83ab          	mldb	m7,a5,(t4)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   10752:	3068882b          	madd.s.mm	m1,m3,m2
+    mstb(1, (uint64_t *)start_addr_C+3*4*8*stride, stride);
+   10756:	98b2                	add	a7,a7,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10758:	0af880ab          	mstb	m1,a5,(a7)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   1075c:	30b0082b          	madd.s.mm	m0,m5,m4
+    mstb(0, (uint64_t *)start_addr_C+4*4*8*stride, stride);
+   10760:	9832                	add	a6,a6,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10762:	0af8002b          	mstb	m0,a5,(a6)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   10766:	30f8882b          	madd.s.mm	m1,m7,m6
+    mstb(1, (uint64_t *)start_addr_C+5*4*8*stride, stride);
+   1076a:	9732                	add	a4,a4,a2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   1076c:	0af700ab          	mstb	m1,a5,(a4)
+    __asm__ __volatile__ ("mldb m2, %0, (%1)"
+   10770:	08f5012b          	mldb	m2,a5,(a0)
+    __asm__ __volatile__ ("mldb m3, %0, (%1)"
+   10774:	08f581ab          	mldb	m3,a5,(a1)
+    __asm__ __volatile__ ("mldb m4, %0, (%1)"
+   10778:	08fe022b          	mldb	m4,a5,(t3)
+    __asm__ __volatile__ ("mldb m5, %0, (%1)"
+   1077c:	08f302ab          	mldb	m5,a5,(t1)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   10780:	3068082b          	madd.s.mm	m0,m3,m2
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   10784:	0af6002b          	mstb	m0,a5,(a2)
+    __asm__ __volatile__ ("madd.s.mm m%0, m%1, m%2"
+   10788:	30b0882b          	madd.s.mm	m1,m5,m4
+    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
+   1078c:	0af680ab          	mstb	m1,a5,(a3)
+}
+   10790:	8082                	ret
+
+0000000000010792 <exit>:
+   10792:	1141                	addi	sp,sp,-16
+   10794:	4581                	li	a1,0
+   10796:	e022                	sd	s0,0(sp)
+   10798:	e406                	sd	ra,8(sp)
+   1079a:	842a                	mv	s0,a0
+   1079c:	12a000ef          	jal	ra,108c6 <__call_exitprocs>
+   107a0:	7601b503          	ld	a0,1888(gp) # 189780 <_global_impure_ptr>
+   107a4:	6d3c                	ld	a5,88(a0)
+   107a6:	c391                	beqz	a5,107aa <exit+0x18>
+   107a8:	9782                	jalr	a5
+   107aa:	8522                	mv	a0,s0
+   107ac:	2e6000ef          	jal	ra,10a92 <_exit>
+
+00000000000107b0 <__libc_init_array>:
+   107b0:	1101                	addi	sp,sp,-32
+   107b2:	e822                	sd	s0,16(sp)
+   107b4:	e04a                	sd	s2,0(sp)
+   107b6:	00001417          	auipc	s0,0x1
+   107ba:	84e40413          	addi	s0,s0,-1970 # 11004 <__preinit_array_end>
+   107be:	00001917          	auipc	s2,0x1
+   107c2:	84690913          	addi	s2,s2,-1978 # 11004 <__preinit_array_end>
+   107c6:	40890933          	sub	s2,s2,s0
+   107ca:	ec06                	sd	ra,24(sp)
+   107cc:	e426                	sd	s1,8(sp)
+   107ce:	40395913          	srai	s2,s2,0x3
+   107d2:	00090963          	beqz	s2,107e4 <__libc_init_array+0x34>
+   107d6:	4481                	li	s1,0
+   107d8:	601c                	ld	a5,0(s0)
+   107da:	0485                	addi	s1,s1,1
+   107dc:	0421                	addi	s0,s0,8
+   107de:	9782                	jalr	a5
+   107e0:	fe991ce3          	bne	s2,s1,107d8 <__libc_init_array+0x28>
+   107e4:	00001417          	auipc	s0,0x1
+   107e8:	82440413          	addi	s0,s0,-2012 # 11008 <__init_array_start>
+   107ec:	00001917          	auipc	s2,0x1
+   107f0:	82c90913          	addi	s2,s2,-2004 # 11018 <__do_global_dtors_aux_fini_array_entry>
+   107f4:	40890933          	sub	s2,s2,s0
+   107f8:	40395913          	srai	s2,s2,0x3
+   107fc:	00090963          	beqz	s2,1080e <__libc_init_array+0x5e>
+   10800:	4481                	li	s1,0
+   10802:	601c                	ld	a5,0(s0)
+   10804:	0485                	addi	s1,s1,1
+   10806:	0421                	addi	s0,s0,8
+   10808:	9782                	jalr	a5
+   1080a:	fe991ce3          	bne	s2,s1,10802 <__libc_init_array+0x52>
+   1080e:	60e2                	ld	ra,24(sp)
+   10810:	6442                	ld	s0,16(sp)
+   10812:	64a2                	ld	s1,8(sp)
+   10814:	6902                	ld	s2,0(sp)
+   10816:	6105                	addi	sp,sp,32
+   10818:	8082                	ret
+	...
+
+000000000001081c <memset>:
+   1081c:	433d                	li	t1,15
+   1081e:	872a                	mv	a4,a0
+   10820:	02c37163          	bgeu	t1,a2,10842 <memset+0x26>
+   10824:	00f77793          	andi	a5,a4,15
+   10828:	e3c1                	bnez	a5,108a8 <memset+0x8c>
+   1082a:	e1bd                	bnez	a1,10890 <memset+0x74>
+   1082c:	ff067693          	andi	a3,a2,-16
+   10830:	8a3d                	andi	a2,a2,15
+   10832:	96ba                	add	a3,a3,a4
+   10834:	e30c                	sd	a1,0(a4)
+   10836:	e70c                	sd	a1,8(a4)
+   10838:	0741                	addi	a4,a4,16
+   1083a:	fed76de3          	bltu	a4,a3,10834 <memset+0x18>
+   1083e:	e211                	bnez	a2,10842 <memset+0x26>
+   10840:	8082                	ret
+   10842:	40c306b3          	sub	a3,t1,a2
+   10846:	068a                	slli	a3,a3,0x2
+   10848:	00000297          	auipc	t0,0x0
+   1084c:	9696                	add	a3,a3,t0
+   1084e:	00a68067          	jr	10(a3) # a00a <main-0x60a6>
+   10852:	00b70723          	sb	a1,14(a4)
+   10856:	00b706a3          	sb	a1,13(a4)
+   1085a:	00b70623          	sb	a1,12(a4)
+   1085e:	00b705a3          	sb	a1,11(a4)
+   10862:	00b70523          	sb	a1,10(a4)
+   10866:	00b704a3          	sb	a1,9(a4)
+   1086a:	00b70423          	sb	a1,8(a4)
+   1086e:	00b703a3          	sb	a1,7(a4)
+   10872:	00b70323          	sb	a1,6(a4)
+   10876:	00b702a3          	sb	a1,5(a4)
+   1087a:	00b70223          	sb	a1,4(a4)
+   1087e:	00b701a3          	sb	a1,3(a4)
+   10882:	00b70123          	sb	a1,2(a4)
+   10886:	00b700a3          	sb	a1,1(a4)
+   1088a:	00b70023          	sb	a1,0(a4)
+   1088e:	8082                	ret
+   10890:	0ff5f593          	zext.b	a1,a1
+   10894:	00859693          	slli	a3,a1,0x8
+   10898:	8dd5                	or	a1,a1,a3
+   1089a:	01059693          	slli	a3,a1,0x10
+   1089e:	8dd5                	or	a1,a1,a3
+   108a0:	02059693          	slli	a3,a1,0x20
+   108a4:	8dd5                	or	a1,a1,a3
+   108a6:	b759                	j	1082c <memset+0x10>
+   108a8:	00279693          	slli	a3,a5,0x2
+   108ac:	00000297          	auipc	t0,0x0
+   108b0:	9696                	add	a3,a3,t0
+   108b2:	8286                	mv	t0,ra
+   108b4:	fa2680e7          	jalr	-94(a3)
+   108b8:	8096                	mv	ra,t0
+   108ba:	17c1                	addi	a5,a5,-16
+   108bc:	8f1d                	sub	a4,a4,a5
+   108be:	963e                	add	a2,a2,a5
+   108c0:	f8c371e3          	bgeu	t1,a2,10842 <memset+0x26>
+   108c4:	b79d                	j	1082a <memset+0xe>
+
+00000000000108c6 <__call_exitprocs>:
+   108c6:	711d                	addi	sp,sp,-96
+   108c8:	ec5e                	sd	s7,24(sp)
+   108ca:	77818b93          	addi	s7,gp,1912 # 189798 <__atexit_recursive_mutex>
+   108ce:	f05a                	sd	s6,32(sp)
+   108d0:	8b2a                	mv	s6,a0
+   108d2:	000bb503          	ld	a0,0(s7)
+   108d6:	e0ca                	sd	s2,64(sp)
+   108d8:	fc4e                	sd	s3,56(sp)
+   108da:	f852                	sd	s4,48(sp)
+   108dc:	f456                	sd	s5,40(sp)
+   108de:	e862                	sd	s8,16(sp)
+   108e0:	ec86                	sd	ra,88(sp)
+   108e2:	e8a2                	sd	s0,80(sp)
+   108e4:	e4a6                	sd	s1,72(sp)
+   108e6:	e466                	sd	s9,8(sp)
+   108e8:	8c2e                	mv	s8,a1
+   108ea:	0fa000ef          	jal	ra,109e4 <__retarget_lock_acquire_recursive>
+   108ee:	7601ba03          	ld	s4,1888(gp) # 189780 <_global_impure_ptr>
+   108f2:	4a85                	li	s5,1
+   108f4:	59fd                	li	s3,-1
+   108f6:	1f8a3903          	ld	s2,504(s4)
+   108fa:	02090463          	beqz	s2,10922 <__call_exitprocs+0x5c>
+   108fe:	00892483          	lw	s1,8(s2)
+   10902:	fff4841b          	addiw	s0,s1,-1
+   10906:	00044e63          	bltz	s0,10922 <__call_exitprocs+0x5c>
+   1090a:	048e                	slli	s1,s1,0x3
+   1090c:	94ca                	add	s1,s1,s2
+   1090e:	020c0963          	beqz	s8,10940 <__call_exitprocs+0x7a>
+   10912:	2084b783          	ld	a5,520(s1) # 1208 <main-0xeea8>
+   10916:	03878563          	beq	a5,s8,10940 <__call_exitprocs+0x7a>
+   1091a:	347d                	addiw	s0,s0,-1
+   1091c:	14e1                	addi	s1,s1,-8
+   1091e:	ff3418e3          	bne	s0,s3,1090e <__call_exitprocs+0x48>
+   10922:	6446                	ld	s0,80(sp)
+   10924:	000bb503          	ld	a0,0(s7)
+   10928:	60e6                	ld	ra,88(sp)
+   1092a:	64a6                	ld	s1,72(sp)
+   1092c:	6906                	ld	s2,64(sp)
+   1092e:	79e2                	ld	s3,56(sp)
+   10930:	7a42                	ld	s4,48(sp)
+   10932:	7aa2                	ld	s5,40(sp)
+   10934:	7b02                	ld	s6,32(sp)
+   10936:	6be2                	ld	s7,24(sp)
+   10938:	6c42                	ld	s8,16(sp)
+   1093a:	6ca2                	ld	s9,8(sp)
+   1093c:	6125                	addi	sp,sp,96
+   1093e:	a84d                	j	109f0 <__retarget_lock_release_recursive>
+   10940:	00892783          	lw	a5,8(s2)
+   10944:	6498                	ld	a4,8(s1)
+   10946:	37fd                	addiw	a5,a5,-1
+   10948:	04878263          	beq	a5,s0,1098c <__call_exitprocs+0xc6>
+   1094c:	0004b423          	sd	zero,8(s1)
+   10950:	d769                	beqz	a4,1091a <__call_exitprocs+0x54>
+   10952:	31092783          	lw	a5,784(s2)
+   10956:	008a96bb          	sllw	a3,s5,s0
+   1095a:	00892c83          	lw	s9,8(s2)
+   1095e:	8ff5                	and	a5,a5,a3
+   10960:	ef89                	bnez	a5,1097a <__call_exitprocs+0xb4>
+   10962:	9702                	jalr	a4
+   10964:	00892703          	lw	a4,8(s2)
+   10968:	1f8a3783          	ld	a5,504(s4)
+   1096c:	01971463          	bne	a4,s9,10974 <__call_exitprocs+0xae>
+   10970:	fb2785e3          	beq	a5,s2,1091a <__call_exitprocs+0x54>
+   10974:	d7dd                	beqz	a5,10922 <__call_exitprocs+0x5c>
+   10976:	893e                	mv	s2,a5
+   10978:	b759                	j	108fe <__call_exitprocs+0x38>
+   1097a:	31492783          	lw	a5,788(s2)
+   1097e:	1084b583          	ld	a1,264(s1)
+   10982:	8ff5                	and	a5,a5,a3
+   10984:	e799                	bnez	a5,10992 <__call_exitprocs+0xcc>
+   10986:	855a                	mv	a0,s6
+   10988:	9702                	jalr	a4
+   1098a:	bfe9                	j	10964 <__call_exitprocs+0x9e>
+   1098c:	00892423          	sw	s0,8(s2)
+   10990:	b7c1                	j	10950 <__call_exitprocs+0x8a>
+   10992:	852e                	mv	a0,a1
+   10994:	9702                	jalr	a4
+   10996:	b7f9                	j	10964 <__call_exitprocs+0x9e>
+
+0000000000010998 <atexit>:
+   10998:	85aa                	mv	a1,a0
+   1099a:	4681                	li	a3,0
+   1099c:	4601                	li	a2,0
+   1099e:	4501                	li	a0,0
+   109a0:	a889                	j	109f2 <__register_exitproc>
+
+00000000000109a2 <__libc_fini_array>:
+   109a2:	1101                	addi	sp,sp,-32
+   109a4:	e822                	sd	s0,16(sp)
+   109a6:	00000797          	auipc	a5,0x0
+   109aa:	67a78793          	addi	a5,a5,1658 # 11020 <WC2>
+   109ae:	00000417          	auipc	s0,0x0
+   109b2:	66a40413          	addi	s0,s0,1642 # 11018 <__do_global_dtors_aux_fini_array_entry>
+   109b6:	8f81                	sub	a5,a5,s0
+   109b8:	e426                	sd	s1,8(sp)
+   109ba:	ec06                	sd	ra,24(sp)
+   109bc:	4037d493          	srai	s1,a5,0x3
+   109c0:	c881                	beqz	s1,109d0 <__libc_fini_array+0x2e>
+   109c2:	17e1                	addi	a5,a5,-8
+   109c4:	943e                	add	s0,s0,a5
+   109c6:	601c                	ld	a5,0(s0)
+   109c8:	14fd                	addi	s1,s1,-1
+   109ca:	1461                	addi	s0,s0,-8
+   109cc:	9782                	jalr	a5
+   109ce:	fce5                	bnez	s1,109c6 <__libc_fini_array+0x24>
+   109d0:	60e2                	ld	ra,24(sp)
+   109d2:	6442                	ld	s0,16(sp)
+   109d4:	64a2                	ld	s1,8(sp)
+   109d6:	6105                	addi	sp,sp,32
+   109d8:	8082                	ret
+
+00000000000109da <__retarget_lock_init>:
+   109da:	8082                	ret
+
+00000000000109dc <__retarget_lock_init_recursive>:
+   109dc:	8082                	ret
+
+00000000000109de <__retarget_lock_close>:
+   109de:	8082                	ret
+
+00000000000109e0 <__retarget_lock_close_recursive>:
+   109e0:	8082                	ret
+
+00000000000109e2 <__retarget_lock_acquire>:
+   109e2:	8082                	ret
+
+00000000000109e4 <__retarget_lock_acquire_recursive>:
+   109e4:	8082                	ret
+
+00000000000109e6 <__retarget_lock_try_acquire>:
+   109e6:	4505                	li	a0,1
+   109e8:	8082                	ret
+
+00000000000109ea <__retarget_lock_try_acquire_recursive>:
+   109ea:	4505                	li	a0,1
+   109ec:	8082                	ret
+
+00000000000109ee <__retarget_lock_release>:
+   109ee:	8082                	ret
+
+00000000000109f0 <__retarget_lock_release_recursive>:
+   109f0:	8082                	ret
+
+00000000000109f2 <__register_exitproc>:
+   109f2:	7179                	addi	sp,sp,-48
+   109f4:	e84a                	sd	s2,16(sp)
+   109f6:	77818913          	addi	s2,gp,1912 # 189798 <__atexit_recursive_mutex>
+   109fa:	f022                	sd	s0,32(sp)
+   109fc:	842a                	mv	s0,a0
+   109fe:	00093503          	ld	a0,0(s2)
+   10a02:	ec26                	sd	s1,24(sp)
+   10a04:	e44e                	sd	s3,8(sp)
+   10a06:	e052                	sd	s4,0(sp)
+   10a08:	f406                	sd	ra,40(sp)
+   10a0a:	84ae                	mv	s1,a1
+   10a0c:	8a32                	mv	s4,a2
+   10a0e:	89b6                	mv	s3,a3
+   10a10:	fd5ff0ef          	jal	ra,109e4 <__retarget_lock_acquire_recursive>
+   10a14:	7601b703          	ld	a4,1888(gp) # 189780 <_global_impure_ptr>
+   10a18:	1f873783          	ld	a5,504(a4)
+   10a1c:	c3b5                	beqz	a5,10a80 <__register_exitproc+0x8e>
+   10a1e:	4798                	lw	a4,8(a5)
+   10a20:	45fd                	li	a1,31
+   10a22:	00093503          	ld	a0,0(s2)
+   10a26:	06e5c263          	blt	a1,a4,10a8a <__register_exitproc+0x98>
+   10a2a:	e01d                	bnez	s0,10a50 <__register_exitproc+0x5e>
+   10a2c:	00270693          	addi	a3,a4,2
+   10a30:	068e                	slli	a3,a3,0x3
+   10a32:	2705                	addiw	a4,a4,1
+   10a34:	c798                	sw	a4,8(a5)
+   10a36:	97b6                	add	a5,a5,a3
+   10a38:	e384                	sd	s1,0(a5)
+   10a3a:	fb7ff0ef          	jal	ra,109f0 <__retarget_lock_release_recursive>
+   10a3e:	4501                	li	a0,0
+   10a40:	70a2                	ld	ra,40(sp)
+   10a42:	7402                	ld	s0,32(sp)
+   10a44:	64e2                	ld	s1,24(sp)
+   10a46:	6942                	ld	s2,16(sp)
+   10a48:	69a2                	ld	s3,8(sp)
+   10a4a:	6a02                	ld	s4,0(sp)
+   10a4c:	6145                	addi	sp,sp,48
+   10a4e:	8082                	ret
+   10a50:	00371593          	slli	a1,a4,0x3
+   10a54:	95be                	add	a1,a1,a5
+   10a56:	1145b823          	sd	s4,272(a1)
+   10a5a:	3107a683          	lw	a3,784(a5)
+   10a5e:	4605                	li	a2,1
+   10a60:	00e6163b          	sllw	a2,a2,a4
+   10a64:	8ed1                	or	a3,a3,a2
+   10a66:	30d7a823          	sw	a3,784(a5)
+   10a6a:	2135b823          	sd	s3,528(a1)
+   10a6e:	4689                	li	a3,2
+   10a70:	fad41ee3          	bne	s0,a3,10a2c <__register_exitproc+0x3a>
+   10a74:	3147a683          	lw	a3,788(a5)
+   10a78:	8e55                	or	a2,a2,a3
+   10a7a:	30c7aa23          	sw	a2,788(a5)
+   10a7e:	b77d                	j	10a2c <__register_exitproc+0x3a>
+   10a80:	20070793          	addi	a5,a4,512
+   10a84:	1ef73c23          	sd	a5,504(a4)
+   10a88:	bf59                	j	10a1e <__register_exitproc+0x2c>
+   10a8a:	f67ff0ef          	jal	ra,109f0 <__retarget_lock_release_recursive>
+   10a8e:	557d                	li	a0,-1
+   10a90:	bf45                	j	10a40 <__register_exitproc+0x4e>
+
+0000000000010a92 <_exit>:
+   10a92:	4581                	li	a1,0
+   10a94:	4601                	li	a2,0
+   10a96:	4681                	li	a3,0
+   10a98:	4701                	li	a4,0
+   10a9a:	4781                	li	a5,0
+   10a9c:	05d00893          	li	a7,93
+   10aa0:	00000073          	ecall
+   10aa4:	00054363          	bltz	a0,10aaa <_exit+0x18>
+   10aa8:	a001                	j	10aa8 <_exit+0x16>
+   10aaa:	1141                	addi	sp,sp,-16
+   10aac:	e022                	sd	s0,0(sp)
+   10aae:	842a                	mv	s0,a0
+   10ab0:	e406                	sd	ra,8(sp)
+   10ab2:	4080043b          	negw	s0,s0
+   10ab6:	008000ef          	jal	ra,10abe <__errno>
+   10aba:	c100                	sw	s0,0(a0)
+   10abc:	a001                	j	10abc <_exit+0x2a>
+
+0000000000010abe <__errno>:
+   10abe:	7701b503          	ld	a0,1904(gp) # 189790 <_impure_ptr>
+   10ac2:	8082                	ret

@@ -1,0 +1,9 @@
+Import('*')
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('matrix_dispatcher.py', sim_objects=['MatrixDispatcher'])
+Source('matrix_dispatcher.cc')
+
+DebugFlag('MatrixDispatcher')

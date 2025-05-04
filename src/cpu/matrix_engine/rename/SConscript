@@ -1,0 +1,13 @@
+import sys
+
+Import('*')
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+
+SimObject('matrix_rename.py', sim_objects=['MatrixRename'])
+Source('matrix_rename.cc')
+
+DebugFlag('MatrixRename')
+

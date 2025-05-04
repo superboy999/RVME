@@ -1,0 +1,12 @@
+import sys
+
+Import("*")
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('matrix_mmu.py', sim_objects=['MatrixMMU'])
+
+Source('matrix_mmu.cc')
+
+DebugFlag('MatrixMMU')

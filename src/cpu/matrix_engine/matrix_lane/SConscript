@@ -1,0 +1,34 @@
+'''
+Author: superboy
+Date: 2024-06-17 16:32:13
+LastEditTime: 2024-06-17 16:32:13
+LastEditors: superboy
+Description: 
+FilePath: /gem5-rvm/src/cpu/matrix_engine/matrix_lane/SConscript
+
+'''
+Import("*")
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('Matrix_Lane.py', sim_objects=['MatrixLane'])
+SimObject('Compute_Unit.py', sim_objects=['ComputeUnit'])
+SimObject('XYBuffer.py', sim_objects=['XYBuffer'])
+SimObject('ZBuffer.py', sim_objects=['ZBuffer'])
+SimObject('Activation.py', sim_objects=['Activation'])
+SimObject('Quantization.py', sim_objects=['Quantization'])
+
+Source('Matrix_Lane.cc')
+Source('Compute_Unit.cc')
+Source('XYBuffer.cc')
+Source('ZBuffer.cc')
+Source('Activation.cc')
+Source('Quantization.cc')
+
+DebugFlag('Matrix_Lane')
+DebugFlag('Compute_Unit')
+DebugFlag('XYBuffer')
+DebugFlag('ZBuffer')
+DebugFlag('Activation')
+DebugFlag('Quantization')

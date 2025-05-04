@@ -1,0 +1,16 @@
+import sys
+
+Import('*')
+
+if not env['BUILD_MATRIX_ENGINE']:
+    print("cwqcwqcwqcwqcwq!!!")
+    Return()
+
+SimObject('matrix_engine_interface.py', sim_objects=['MatrixEngineInterface'])
+SimObject('matrix_engine.py', sim_objects=['MatrixEngine'])
+
+Source('matrix_engine_interface.cc')
+Source('matrix_engine.cc')
+
+DebugFlag('MatrixEngineInterface')
+DebugFlag('MatrixEngine')

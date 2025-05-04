@@ -7,10 +7,7 @@
  * @FilePath: /gem5-rvm/README.md
  * 
 -->
-# Attention
-This repository is provided for the purpose of double-blind review. It does not contain any information identifying the authors.
-Code will be released upon acceptance.
-# RVME
+# gem5-rvm
 This repo is based on gem5 simulator, to model the risc-v matrix engine.
 
 # Change Log
@@ -33,6 +30,3 @@ This repo is based on gem5 simulator, to model the risc-v matrix engine.
 
 - 2024/7/28
 1. Add SRAM Occupy Mechanism, especially for the read because write process will be protected by RAT.
-
--2025/2/20
-1. Support new feature.

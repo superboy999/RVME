@@ -1,0 +1,13 @@
+# Import("*")
+
+# if not env['BUILD_MATRIX_ENGINE']:
+#     Return()
+
+# SimObject('BaseBuffer.py')
+
+# Source('BaseBuffer.cc')
+
+# DebugFlag('BaseBuffer')
+
+# CompoundFlag('MatrixMem',
+#     [ 'MatrixMemUnit','MemUnitWriteTiming', 'MemUnitReadTiming' ])
