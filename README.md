@@ -9,6 +9,7 @@
 -->
 # gem5-rvm
 This repo is based on gem5 simulator, to model the risc-v matrix engine.
+Later, we will release the new version of matrix engine which supports Xuantie MME v0.6.
 
 # Change Log
 - 2023/11/20
