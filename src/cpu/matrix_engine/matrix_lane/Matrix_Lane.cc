@@ -71,9 +71,11 @@ void MatrixLane::issue_inst(ScoreBoard_Entry* matrix_sbe)
     lane_minst->xreg_idx = matrix_sbe->get_renamed_src1();
     lane_minst->yreg_idx = matrix_sbe->get_renamed_src2();
     lane_minst->zreg_idx = matrix_sbe->get_dst_prf_num();
+    lane_minst->lane_idx = matrix_sbe->lane_idx;
     lane_minst->load_cnt = 0;
     lane_minst->exe_num = 0;
     lane_minst->instDone = false;
+    lane_idx = matrix_sbe->lane_idx;
     busy = true;
     startTicking();
     InstNum++;
@@ -172,11 +174,11 @@ void MatrixLane::evaluate()
 {
     // DPRINTF(Matrix_Lane, "Matrix Lane check!\n");
     // assert(busy);
-    if(transOutDone){
+    if(transOutDone){ //这里意思是只要开始传一下输出就transoutdone，其实改成开始输出才对
         //This instruction has finally done here!
         // delete lane_minst;
         // stopTicking();
-        tranz_minst.instDone = true;
+        // tranz_minst.instDone = true;
         start_transZ = false;
         start_output = false;
         saveZDone = false;
@@ -220,7 +222,8 @@ void MatrixLane::evaluate()
         }
     } else if (computeDone&&!start_transZ&&!start_output){
             sendtoZ = true;
-            tranz_minst = *lane_minst;
+            tranz_minst = *lane_minst; //tranz_minst继续控制ping指令的后续操作，laneminst要去接受pong指令啦
+            lane_minst->lane_reset();
             delete lane_minst;
             computeDone = false;
         }

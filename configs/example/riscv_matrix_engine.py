@@ -30,7 +30,7 @@ from common import Options
 ps = OptionParser()
 
 # GENERAL OPTIONS
-ps.add_option('--cmd',              type="string", default="/cluster/home/chenwq/research/rvm/simulator/run/tests/cwq/dataflow/128x2048x512",
+ps.add_option('--cmd',              type="string", default="/cluster/home/chenwq/research/rvm/simulator/run/tests/cwq/test/test1",
                                     help="Command to run on the CPU")
 ps.add_option('--numThreads',       type="int", default=1,
                                     help="Number of threads running on the CPU")
@@ -38,7 +38,7 @@ ps.add_option('--output',           type="string",
                                     help="Outputs")
 ps.add_option('--options',          type="string",
                                     help="Options")
-ps.add_option('--cache_line_size',  type="int", default=32,
+ps.add_option('--cache_line_size',  type="int", default=64,
                                     help="System Cache Line Size in Bytes, same as RLEN")
 ps.add_option('--l1i_size',         type="string", default='32kB',
                                     help="L1 instruction cache size")
@@ -50,6 +50,13 @@ ps.add_option('--mem_size',         type="string", default='512MB',
                                     help="Size of the DRAM")
 ps.add_option('--cpu_clk',          type="string", default='2GHz',
                                     help="Speed of all CPUs")
+
+# Instruction Buffer OPTIONS
+ps.add_option('--IB_depth',  type="int", default=128,
+                                    help="Instruction Buffer depth")
+# Elementwise Unit OPTIONS
+ps.add_option('--parallel_ew',  type="int", default=4,
+                                    help="Number of parallel Elementwise Units")
 
 # MATRIX DISPATCHER OPTIONS
 ps.add_option('--MQ_depth',  type="int", default=64,
@@ -70,7 +77,7 @@ ps.add_option('--cu_column_size',  type="int", default=8,
                                     help="Compute Unit Array column size")
 ps.add_option('--WIDEN',  type="int", default=4,
                                     help="Data Widen Coeffience")
-ps.add_option('--scale_factor',  type="float", default=0.5,
+ps.add_option('--scale_factor',  type="float", default=0.0075,
                                     help="Data scale factor") #default = 0.0075/1
 ps.add_option('--enable_activate', type="int", default=True,
                                     help="Enable the activation")
@@ -90,8 +97,12 @@ ps.add_option('--z_num_port',  type="int", default=8,
                                     help="ZBuffer Ports Number")
 
 # MATRIX REGISTER
-ps.add_option('--physicReg_num',  type="int", default=20,
-                                    help="Matrix physical register number")
+ps.add_option('--tileReg_num',  type="int", default=16,
+                                    help="Tile Register Number")
+ps.add_option('--accReg_num',  type="int", default=16,
+                                    help="Accumulator Register Number")
+# ps.add_option('--physicReg_num',  type="int", default=32,
+#                                     help="Matrix physical register number")
 ps.add_option('--regWidth',  type="int", default=256,
                                     help="Matrix register width")
 ps.add_option('--bank_num',  type="int", default=4,
@@ -110,13 +121,15 @@ ps.add_option('--pending_depth',  type="int", default=64,
                                     help="Matrix MMU pending depth")
 
 # MATRIX RENAME
-ps.add_option('--numPhysicalRegs',  type="int", default=20,
+ps.add_option('--numPhysicalRegs',  type="int", default=32,
                                     help="Matrix physical register number")
 ps.add_option('--numLogicalRegs',  type="int", default=8,
                                     help="Matrix logical register number")
 # MATRIX ROB
 ps.add_option('--ROB_depth',  type="int", default=64,
                                     help="Matrix ROB depth")
+ps.add_option('--MDU_depth',  type="int", default=64,
+                                    help="Matrix MDU depth")
 
 # MATRIX ENGINE TOP
 ps.add_option('--lane_num',  type="int", default=4,
@@ -189,9 +202,9 @@ def createMatrixCache(cpu):
     system.MatrixCache = Cache(
         size = "32kB",
         assoc = 4,
-        tag_latency = 1,
-        data_latency = 1,
-        response_latency = 1,
+        tag_latency = 2,
+        data_latency = 2,
+        response_latency = 2,
         mshrs = 4,
         tgts_per_mshr = 20
     )
@@ -221,12 +234,20 @@ system.cpu.matrix_interface = MatrixEngineInterface(
             numPhysicalRegs = options.numPhysicalRegs,
             numLogicalRegs = options.numLogicalRegs
         ),
+        ew_unit = ElementwiseUnit(
+            parallel_ewu = options.lane_num,
+            clk_domain = SrcClockDomain(
+                clock = options.matrix_engine_clk,
+                voltage_domain = VoltageDomain()
+            )
+        ),
         matrix_rob = ReorderBuffer(
             clk_domain = SrcClockDomain(
                 clock = options.matrix_engine_clk,
                 voltage_domain = VoltageDomain()  
             ),
-            ROB_depth = options.ROB_depth
+            ROB_depth = options.ROB_depth,
+            MDU_depth = options.MDU_depth
         ),
         lane_num = options.lane_num,
         matrix_dispatcher = MatrixDispatcher(
@@ -237,8 +258,9 @@ system.cpu.matrix_interface = MatrixEngineInterface(
             MQ_depth = options.MQ_depth,
             AQ_depth = options.AQ_depth
         ),
-        matrix_reg = MatrixRF(
-            physicReg_num = options.physicReg_num,
+        matrix_reg= MatrixRF(
+            tileReg_num = options.tileReg_num,
+            accReg_num = options.accReg_num,
             regWidth = options.regWidth,
             bank_num = options.bank_num,
             bank_depth = options.bank_depth
@@ -289,12 +311,19 @@ system.cpu.matrix_interface = MatrixEngineInterface(
                 )
             )for cu_id in range(0, options.cu_row_size*options.cu_column_size)]
         )for lane_id in range(0, options.lane_num)]
+    ),
+    inst_buffer = InstructionBuffer(
+        IB_depth = options.IB_depth,
+        clk_domain = SrcClockDomain(
+            clock = options.matrix_engine_clk,
+            voltage_domain = VoltageDomain()
+        )
     )
 )
 
-system.l2bus = L2XBar()
+system.l2bus = L2XBar(width = 32)
 
-system.membus = SystemXBar()
+system.membus = SystemXBar(width = 16)
 
 def connectMatrixCache(cpu, matrix_engine, l2bus):
     cpu.icache_port = cpu.icache.cpu_side
@@ -309,9 +338,9 @@ connectMatrixCache(system.cpu, system.cpu.matrix_interface.matrix_engine, system
 system.l2cache = Cache(
     size = options.l2_size,
     assoc = 8,
-    tag_latency = 8,
-    data_latency = 8,
-    response_latency = 8,
+    tag_latency = 6,
+    data_latency = 6,
+    response_latency = 6,
     mshrs = 20,
     tgts_per_mshr = 12
 )

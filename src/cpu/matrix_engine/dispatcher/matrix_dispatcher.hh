@@ -42,7 +42,7 @@ public:
     void sendInstToCQ(ScoreBoard_Entry* matrix_sbe, uint64_t src1_value, ThreadContext *tc);
     void sendInstToMQ(ScoreBoard_Entry* matrix_sbe, uint64_t src1_value, uint64_t src2_value, ThreadContext *tc);
     void sendInstToAQ(ScoreBoard_Entry* matrix_sbe, ThreadContext *tc);
-
+    void recvMzero(ScoreBoard_Entry* matrix_sbe);
     bool dispatchGrant(RiscvISA::RiscvMatrixInst &minst); //对外的接口函数
     bool dispatchGrant_withoutReg(RiscvISA::RiscvMatrixInst &minst);
     // void dispatchInst();
@@ -96,8 +96,10 @@ public:
     statistics::Scalar WaitingForReg;  //counting the waiting cycle
     statistics::Scalar LaneWaitingForReg;  //counting the waiting cycle
     statistics::Scalar WaitingForLane;
+    statistics::Scalar WaitingForEWU;
     statistics::Scalar LaneisFree;
-    statistics::Scalar hasFreeReg;
+    statistics::Scalar hasFreeTileReg;
+    statistics::Scalar hasFreeAccReg;
     statistics::Scalar allLaneisFree;
     statistics::Scalar MatrixMQentryUsed;
     statistics::Scalar MatrixAQentryUsed;

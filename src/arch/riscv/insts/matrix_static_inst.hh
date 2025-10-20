@@ -100,6 +100,26 @@ namespace RiscvISA
         bool ismcfg() const {
             return ((x(25, 3) == 0b111)&&(x(31, 1) == 0b1)&&(x(28, 3) == 0b111));
         }
+        //=== these has been allocated into arithmetic instructions
+        bool ismmacc() const {
+            return ((x(28, 4) == 0b0010)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b00));
+        }
+        bool ismadd() const {
+            return ((x(28, 4) == 0b0011)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismsub() const {
+            return ((x(28, 4) == 0b0100)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismshiftr() const {
+            return ((x(28, 4) == 0b0101)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismmul() const {
+            return ((x(28, 4) == 0b1000)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismzero() const {
+            return ((x(28, 4) == 0b1010)&&(x(25, 3) == 0b000)&&(x(18, 7) == 0b0000000)&& (x(7, 5) == 0b00000));
+        }
+        //====
         bool isSigned() const {
             return (x(7, 3) == 0b000);
         }
@@ -210,6 +230,21 @@ namespace RiscvISA
         }
         bool ismcfg() const {
             return ((x(25, 3) == 0b111)&&(x(31, 1) == 0b1)&&(x(28, 3) == 0b111));
+        }
+        bool ismadd() const {
+            return ((x(28, 4) == 0b0011)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismsub() const {
+            return ((x(28, 4) == 0b0100)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismshiftr() const {
+            return ((x(28, 4) == 0b0101)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismmul() const {
+            return ((x(28, 4) == 0b1000)&&(x(25, 3) == 0b000)&&(x(10, 2) == 0b10)&& (x(7, 3) == 0b000));
+        }
+        bool ismzero() const {
+            return ((x(28, 4) == 0b1010)&&(x(25, 3) == 0b000)&&(x(18, 7) == 0b0000000)&& (x(7, 5) == 0b00000));
         }
         bool isSigned() const {
             return (x(7, 3) == 0b000);

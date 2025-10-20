@@ -769,15 +769,33 @@ decode QUADRANT default Unknown::unknown() {
 
         0x0a: decode MUOP {
             0x0: decode MSIZE2 {
-                0x0: decode MUIMM3 {
-                    format MatrixMultiplyOp {
-                        0x0: mmaqab({{
+                0x0: decode M31_28 {
+                    0x2: decode MUIMM3 {
+                        format MatrixMultiplyOp {
+                            0x0: mmaqab({{
+                            }}, IsMatrixMul);
+                            0x1: mmaqaub({{
+                            }}, IsMatrixMul);
+                            0x2: mmaqausb({{
+                            }}, IsMatrixMul);
+                            0x3: mmaqasub({{
+                            }}, IsMatrixMul);
+                        }
+                    }
+                    format MatrixMultiplyOp{
+                        0xa: mzero({{
                         }}, IsMatrixMul);
-                        0x1: mmaqaub({{
+                    }
+                }
+                0x2: decode M31_28{
+                    format MatrixMultiplyOp{
+                        0x3: madd({{
                         }}, IsMatrixMul);
-                        0x2: mmaqausb({{
+                        0x4: msub({{
                         }}, IsMatrixMul);
-                        0x3: mmaqasub({{
+                        0x5: msra({{
+                        }}, IsMatrixMul);
+                        0x8: mmul({{
                         }}, IsMatrixMul);
                     }
                 }

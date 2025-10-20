@@ -1244,19 +1244,8 @@ Commit::commitHead(const DynInstPtr &head_inst, unsigned inst_num)
         DPRINTF(CheckMatrix, "c_src1 = %llu\n", c_src1);
     }
 
-    // if(head_inst->numSrcs()>0){
-    //     uint64_t c_src1;
-    //     c_src1 = head_inst->getRegOperand(head_inst->staticInst.get(), 0);
-    //     unsigned num_src_regs = head_inst->numSrcRegs();
-    //     DPRINTF(CpuMatrixIssue, "c_src1 = %llu\n", c_src1);
-    //     DPRINTF(CpuMatrixIssue, "num_src_regs = %llu\n", num_src_regs);
-    // }
-    // if(head_inst->numDests()>0){
-    //     unsigned num_dest_regs = head_inst->numDests();
-    //     DPRINTF(CpuMatrixIssue, "num_dest_regs = %llu\n", num_dest_regs);
-    // }
-
     // cwq add matrix interface to the commmit stage=================================
+    // Offload logic stage 1
     // if (inst_fault == NoFault && head_inst->isMatrix()){
 
     //     auto inst_ptr = head_inst->staticInst.get();
@@ -1269,52 +1258,55 @@ Commit::commitHead(const DynInstPtr &head_inst, unsigned inst_num)
     //     if(!matrix_inst){
     //         DPRINTF(CpuMatrixIssue, "convert inst to minst false!\n");
     //     }
+    //     if((matrix_inst->isStore()&&cpu->matrix_interface->requestGrant_withoutReg(matrix_inst))||(!matrix_inst->isStore()&&cpu->matrix_interface->requestGrant(matrix_inst))){
+    //         DPRINTF(CpuMatrixIssue, "Cpu sent to matrix engine!\n");
+    //         uint64_t src1, src2;
+    //         uint64_t imm;
+    //         if(matrix_inst->isLoad()||matrix_inst->isStore()){
+    //             src1 = head_inst->getRegOperand(matrix_inst, 0);
+    //             src2 = head_inst->getRegOperand(matrix_inst, 1);
+    //             cpu->matrix_interface->loadstoreMatrix(matrix_inst,cpu->getContext(tid), src1, src2);
+    //             complete_matrix_inst = true; 
+    //         } else if(matrix_inst->isMatrixConfig()){
+    //             if(matrix_inst->getbits_31()){ //r-type
+    //                 src1 = head_inst->getRegOperand(matrix_inst, 0);
+    //                 cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), src1);
+    //             } else{ //i-type
+    //                 imm = matrix_inst->getbits_18_24();
+    //                 DPRINTF(CheckMatrix, "mcfgi imm = %llu\n", imm);
+    //                 cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), imm);
+    //             }   
+    //             complete_matrix_inst = true; 
+    //         } else if(matrix_inst->isMatrixInstArith()){
+    //             cpu->matrix_interface->sendCommand(matrix_inst, cpu->getContext(tid));
+    //             complete_matrix_inst = true; 
+    //         }
+    //     } else{
+    //         // 发送失败
+    //         return false;
+    //     }
     //     if(complete_matrix_inst) {
     //         DPRINTF(CpuMatrixIssue, "CPU has sent matrix instruction to the matrix engine! \n");
     //         //reset this signal for next matrix inst
     //         complete_matrix_inst = false;
     //     }
-    //     else {
-    //         if (waiting_matrix_engine_resp) { //always can be sent to matrix engine, pretend that there is no stall
-    //             DPRINTF(CpuMatrixIssue, "Cpu sent to matrix engine!\n");
-    //             uint64_t src1, src2;
-    //             uint64_t imm;
-    //             if(matrix_inst->isLoad()||matrix_inst->isStore()){
-    //                 src1 = head_inst->getRegOperand(matrix_inst, 0);
-    //                 src2 = head_inst->getRegOperand(matrix_inst, 1);
-    //                 cpu->matrix_interface->loadstoreMatrix(matrix_inst,cpu->getContext(tid), src1, src2);
-    //                 complete_matrix_inst = true; 
-    //             } else if(matrix_inst->isMatrixConfig()){
-    //                 if(matrix_inst->getbits_31()){ //r-type
-    //                     src1 = head_inst->getRegOperand(matrix_inst, 0);
-    //                     cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), src1);
-    //                 } else{ //i-type
-    //                     imm = matrix_inst->getbits_18_24();
-    //                     DPRINTF(CheckMatrix, "mcfgi imm = %llu\n", imm);
-    //                     cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), imm);
-    //                 }   
-    //                 complete_matrix_inst = true; 
-    //             } else if(matrix_inst->isMatrixInstArith()){
-    //                 cpu->matrix_interface->sendCommand(matrix_inst, cpu->getContext(tid));
-    //                 complete_matrix_inst = true; 
-    //             }
-    //             //reset this signal for next matrix inst
-    //             waiting_matrix_engine_resp = false;
-    //         } else {
-    //             if(cpu->matrix_interface->requestGrant(matrix_inst)) {
-    //                 waiting_matrix_engine_resp = true;
-    //                 DPRINTF(CpuMatrixIssue, "CPU receive matrix engine requestGrant signal!\n");
-    //             } else {
-    //                 DPRINTF(CpuMatrixIssue, "Cpu send matrix instruction failed, because no grant!\n");
-    //             }
-    //         }
-    //         DPRINTF(CpuMatrixIssue, "Cpu send matrix instruction has not finished!\n");
-    //         return false;
-    //     }
     // }
-    // cwq add matrix interface to the commmit stage=================================
-
-        if (inst_fault == NoFault && head_inst->isMatrix()){
+    ///  new offload logic stage 1
+    if (inst_fault == NoFault && head_inst->isFullMemBarrier())
+    {
+        cpu->matrix_interface->setBlockStatus(true);
+        DPRINTF(CpuMatrixIssue, "Cpu set matrix engine to blocked status! \n");
+        if(!(cpu->matrix_interface->matrix_engine->matrix_rob->meminst_Empty()&&cpu->matrix_interface->inst_buffer->meminst_Empty())){
+            DPRINTF(CpuMatrixIssue, "ROB status is %d \n", cpu->matrix_interface->matrix_engine->matrix_rob->meminst_Empty());
+            DPRINTF(CpuMatrixIssue, "Inst buffer status is %d \n", cpu->matrix_interface->inst_buffer->meminst_Empty());
+            DPRINTF(CpuMatrixIssue, "ROB meminst number is %d! \n", cpu->matrix_interface->matrix_engine->matrix_rob->meminst_num);
+            return false;
+        } else {
+            cpu->matrix_interface->setBlockStatus(false);
+            DPRINTF(CpuMatrixIssue, "Cpu set matrix engine to unblocked status! \n");
+        }
+    }
+    if (inst_fault == NoFault && head_inst->isMatrix()){
 
         auto inst_ptr = head_inst->staticInst.get();
         std::cout << "实际对象类型: " << typeid(*inst_ptr).name() << std::endl;
@@ -1326,29 +1318,39 @@ Commit::commitHead(const DynInstPtr &head_inst, unsigned inst_num)
         if(!matrix_inst){
             DPRINTF(CpuMatrixIssue, "convert inst to minst false!\n");
         }
-        if((matrix_inst->isStore()&&cpu->matrix_interface->requestGrant_withoutReg(matrix_inst))||(!matrix_inst->isStore()&&cpu->matrix_interface->requestGrant(matrix_inst))){
-            DPRINTF(CpuMatrixIssue, "Cpu sent to matrix engine!\n");
-            uint64_t src1, src2;
-            uint64_t imm;
-            if(matrix_inst->isLoad()||matrix_inst->isStore()){
-                src1 = head_inst->getRegOperand(matrix_inst, 0);
-                src2 = head_inst->getRegOperand(matrix_inst, 1);
-                cpu->matrix_interface->loadstoreMatrix(matrix_inst,cpu->getContext(tid), src1, src2);
-                complete_matrix_inst = true; 
-            } else if(matrix_inst->isMatrixConfig()){
-                if(matrix_inst->getbits_31()){ //r-type
-                    src1 = head_inst->getRegOperand(matrix_inst, 0);
-                    cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), src1);
-                } else{ //i-type
-                    imm = matrix_inst->getbits_18_24();
-                    DPRINTF(CheckMatrix, "mcfgi imm = %llu\n", imm);
-                    cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), imm);
-                }   
-                complete_matrix_inst = true; 
-            } else if(matrix_inst->isMatrixInstArith()){
-                cpu->matrix_interface->sendCommand(matrix_inst, cpu->getContext(tid));
-                complete_matrix_inst = true; 
+        if((!cpu->matrix_interface->inst_buffer->isFull())&&!cpu->matrix_interface->isBlocked()){
+            if(!cpu->matrix_interface->inst_buffer->isBusy()){
+                cpu->matrix_interface->inst_buffer->startTicking();
             }
+            DPRINTF(CpuMatrixIssue, "Cpu sent to matrix engine!\n");
+            DynInstPtr matrix_dinst = head_inst;
+            cpu->matrix_interface->inst_buffer->push_inst(matrix_dinst);
+            if(matrix_inst->isLoad()||matrix_inst->isStore()){
+                cpu->matrix_interface->inst_buffer->meminst_num++;
+            }
+            complete_matrix_inst = true;
+
+            // uint64_t src1, src2;
+            // uint64_t imm;
+            // if(matrix_inst->isLoad()||matrix_inst->isStore()){
+            //     src1 = head_inst->getRegOperand(matrix_inst, 0);
+            //     src2 = head_inst->getRegOperand(matrix_inst, 1);
+            //     cpu->matrix_interface->loadstoreMatrix(matrix_inst,cpu->getContext(tid), src1, src2);
+            //     complete_matrix_inst = true; 
+            // } else if(matrix_inst->isMatrixConfig()){
+            //     if(matrix_inst->getbits_31()){ //r-type
+            //         src1 = head_inst->getRegOperand(matrix_inst, 0);
+            //         cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), src1);
+            //     } else{ //i-type
+            //         imm = matrix_inst->getbits_18_24();
+            //         DPRINTF(CheckMatrix, "mcfgi imm = %llu\n", imm);
+            //         cpu->matrix_interface->configMatrix(matrix_inst, cpu->getContext(tid), imm);
+            //     }   
+            //     complete_matrix_inst = true; 
+            // } else if(matrix_inst->isMatrixInstArith()){
+            //     cpu->matrix_interface->sendCommand(matrix_inst, cpu->getContext(tid));
+            //     complete_matrix_inst = true; 
+            // }
         } else{
             // 发送失败
             return false;
@@ -1359,7 +1361,6 @@ Commit::commitHead(const DynInstPtr &head_inst, unsigned inst_num)
             complete_matrix_inst = false;
         }
     }
-    ///  fix in 2024/8/21
 
     updateComInstStats(head_inst);
 

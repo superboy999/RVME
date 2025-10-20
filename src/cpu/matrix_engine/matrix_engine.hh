@@ -1,7 +1,12 @@
-// ==========================================
-// Author: cwq
-// Last Date: 2023/12/21
-// ==========================================
+/*
+ * @Author: superboy
+ * @Date: 2025-10-04 11:25:16
+ * @LastEditTime: 2025-10-06 17:07:47
+ * @LastEditors: superboy
+ * @Description: 
+ * @FilePath: /gem5-rvm/src/cpu/matrix_engine/matrix_engine.hh
+ * 
+ */
 #ifndef __CPU_MATRIX_ENGINE_HH__
 #define __CPU_MATRIX_ENGINE_HH__
 
@@ -19,6 +24,7 @@
 #include "cpu/matrix_engine/matrix_registerfile/matrix_reg.hh"
 #include "cpu/matrix_engine/mmu/matrix_mmu.hh"
 #include "cpu/o3/cpu.hh"
+#include "cpu/matrix_engine/elementwise_unit/ew_unit.hh"
 namespace gem5
 {
 struct MatrixEngineParams;
@@ -52,6 +58,7 @@ public:
     MatrixDispatcher *matrix_dispatcher;
     MatrixRF *matrix_reg;
     MatrixMMU *matrix_mmu;
+    ElementwiseUnit *ew_unit;
     //python configuration
     uint8_t lane_num;
     gem5::o3::CPU* o3cpu;

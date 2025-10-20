@@ -1,3 +1,12 @@
+'''
+Author: superboy
+Date: 2025-10-13 19:31:37
+LastEditTime: 2025-10-13 19:33:10
+LastEditors: superboy
+Description: 
+FilePath: /gem5-rvm/src/cpu/matrix_engine/matrix_engine.py
+
+'''
 from m5.params import *
 from m5.SimObject import SimObject
 import m5.defines
@@ -14,3 +23,4 @@ class MatrixEngine(SimObject):
     matrix_dispatcher = Param.MatrixDispatcher("Matrix Dispatcher in Matrix Engine")
     matrix_reg = Param.MatrixRF("Matrix Register File in Matrix Engine")
     matrix_mmu = Param.MatrixMMU("Matrix MMU in Matrix Engine")
+    ew_unit = Param.ElementwiseUnit("Elementwise Unit in Matrix Engine")

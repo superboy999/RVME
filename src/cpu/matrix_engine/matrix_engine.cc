@@ -1,7 +1,12 @@
-// ==========================================
-// Author: cwq
-// Last Date: 2023/12/21
-// ==========================================
+/*
+ * @Author: superboy
+ * @Date: 2025-10-04 11:25:46
+ * @LastEditTime: 2025-10-13 19:33:02
+ * @LastEditors: superboy
+ * @Description: 
+ * @FilePath: /gem5-rvm/src/cpu/matrix_engine/matrix_engine.cc
+ * 
+ */
 
 #include <algorithm>
 #include <functional>
@@ -16,7 +21,7 @@
 
 namespace gem5
 {
-MatrixEngine::MatrixEngine(const MatrixEngineParams &params) : SimObject(params), matrix_rename(params.matrix_rename), matrix_dispatcher(params.matrix_dispatcher), matrix_rob(params.matrix_rob), lane_num(params.lane_num), matrix_reg(params.matrix_reg), matrix_mmu(params.matrix_mmu), matrix_lanes(params.matrix_lanes)
+MatrixEngine::MatrixEngine(const MatrixEngineParams &params) : SimObject(params), matrix_rename(params.matrix_rename), matrix_dispatcher(params.matrix_dispatcher), matrix_rob(params.matrix_rob), lane_num(params.lane_num), matrix_reg(params.matrix_reg), matrix_mmu(params.matrix_mmu), matrix_lanes(params.matrix_lanes), ew_unit(params.ew_unit)
 {
     // for(uint8_t i = 0; i < lane_num; i++){ // we do this in the python script
     //     matrix_lanes.push_back(new Matrix)
@@ -30,6 +35,7 @@ MatrixEngine::MatrixEngine(const MatrixEngineParams &params) : SimObject(params)
     matrix_dispatcher->set_matrixEnginePtr(this);
     matrix_rob->set_matrixEnginePtr(this);
     matrix_mmu->set_matrixEngine_ptr(this);
+    ew_unit->set_matrixEnginePtr(this);
 }
 
 void MatrixEngine::cfgSizeN(uint8_t sizen)

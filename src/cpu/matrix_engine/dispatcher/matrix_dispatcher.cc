@@ -50,6 +50,9 @@ void MatrixDispatcher::regStats()
     WaitingForLane
     .name(name() + ".TicksForWaitingLane")
     .desc("Ticks of waiting for free Matrix Lane");
+    WaitingForEWU
+    .name(name() + ".TicksForWaitingEWU")
+    .desc("Ticks of waiting for free EWU");
     allLaneisFree
     .name(name() + ".TicksForAllLaneFree")
     .desc("Ticks of all Matrix Lane is free");
@@ -59,9 +62,12 @@ void MatrixDispatcher::regStats()
     LaneWaitingForReg
     .name(name() + ".TicksForLaneWaitingReg")
     .desc("Ticks of Lane waiting for reg");
-    hasFreeReg
+    hasFreeTileReg
     .name(name() + ".TicksForFreeReg")
-    .desc("Ticks of free reg");
+    .desc("Ticks of free Tile reg");
+    hasFreeAccReg
+    .name(name() + ".TicksForFreeAccReg")
+    .desc("Ticks of free Acc reg");
     MatrixMQentryUsed
     .name(name() + ".MatrixMQentryUsed")
     .desc("Number of Matrix Memory Queue entry used!");
@@ -105,14 +111,22 @@ void MatrixDispatcher::renameMatrixInst(RiscvISA::RiscvMatrixInst &minst, ScoreB
     uint16_t md = minst.md();
     uint16_t load_md = minst.load_md();
     matrix_sbe->set_MatrixStaticInst(&minst);
-
+    matrix_sbe->ms1 = ms1;
+    matrix_sbe->ms2 = ms2;
+    matrix_sbe->ms3 = ms3;
+    matrix_sbe->md = md;
     // matrix_engine->matrix_rename->set_RAT_vld(load_md, false); //FIXED: every md before inst finished, will be marked as invalid right behind selected!
 
     if(minst.isLoad()||minst.isStore()){
         if(minst.isLoad()){
             //This function has destreg, so rename here.
             // mld<b/h/w/d> md, rs2, (rs1)
-            pmd = matrix_engine->matrix_rename->get_freeReg();
+            if(load_md < 4){
+                pmd = matrix_engine->matrix_rename->get_freeTileReg();
+            } else if (load_md < 8 && load_md >= 4){
+                pmd = matrix_engine->matrix_rename->get_freeAccReg();
+            }
+            // pmd = matrix_engine->matrix_rename->get_freeReg();
             matrix_engine->matrix_rename->regLock(pmd);
             old_dst = matrix_engine->matrix_rename->get_preg_RAT(load_md);
             matrix_engine->matrix_rename->set_preg_RAT(load_md, pmd);
@@ -120,6 +134,7 @@ void MatrixDispatcher::renameMatrixInst(RiscvISA::RiscvMatrixInst &minst, ScoreB
             matrix_sbe->set_dst_prf_num(pmd);
             matrix_sbe->set_old_dst(old_dst);
             matrix_load_inst++;
+            matrix_sbe->dst_memdep_idx = matrix_engine->matrix_rob->set_md_entry(load_md);
         } else if(minst.isStore()){
             //This function has no destination register, so dont rename;
             //mst<b/h/w/d> ms3, rs2, (rs1)
@@ -127,6 +142,7 @@ void MatrixDispatcher::renameMatrixInst(RiscvISA::RiscvMatrixInst &minst, ScoreB
             matrix_engine->matrix_rename->regLock(pms3);
             matrix_sbe->set_renamed_src3(pms3);
             matrix_store_inst++;
+            matrix_sbe->src3_memdep_idx = matrix_engine->matrix_rob->mdtail[ms3];
         }
         matrix_sbe->set_cfg_size(matrix_engine->get_sizeN(), matrix_engine->get_sizeM(), matrix_engine->get_sizeK());
     } else if(minst.isMatrixInstArith()){
@@ -140,21 +156,77 @@ void MatrixDispatcher::renameMatrixInst(RiscvISA::RiscvMatrixInst &minst, ScoreB
         // mmaqaus.b md, ms2, ms1
         // #signed-unsigned matrix multiply
         // mmaqasu.b md, ms2, ms1
-        pmd = matrix_engine->matrix_rename->get_freeReg();
-        matrix_engine->matrix_rename->regLock(pmd);
-        old_dst = matrix_engine->matrix_rename->get_preg_RAT(md);
-        matrix_engine->matrix_rename->set_preg_RAT(md, pmd);
-        pms1 = matrix_engine->matrix_rename->get_preg_RAT(ms1);
-        pms2 = matrix_engine->matrix_rename->get_preg_RAT(ms2);
-        matrix_engine->matrix_rename->regLock(pms1);
-        matrix_engine->matrix_rename->regLock(pms2);
-        matrix_sbe->set_renamed_src1(pms1);
-        matrix_sbe->set_renamed_src2(pms2);
-        matrix_sbe->set_dst_lrf_num(md);
-        matrix_sbe->set_dst_prf_num(pmd);
-        matrix_sbe->set_old_dst(old_dst);
 
-        matrix_sbe->set_cfg_size(matrix_engine->get_sizeN(), matrix_engine->get_sizeM(), matrix_engine->get_sizeK());
+        // Note: Here is special: For accumulator register, only mzero can rename it, or is will coninuelly save to same physical register!
+        if(minst.ismmacc()){
+            if(md < 4){
+                // pmd = matrix_engine->matrix_rename->get_freeTileReg();
+                panic("THIS is A FAULT INSTRUCTION");
+            } else if (md < 8 && md >= 4){
+                if(matrix_engine->matrix_rename->accCanRls(md)){
+                    matrix_engine->matrix_rename->setAcc(md, false); //mark it as used
+                    pmd = matrix_engine->matrix_rename->get_freeAccReg();
+                    matrix_engine->matrix_rename->regLock(pmd);
+                    old_dst = matrix_engine->matrix_rename->get_preg_RAT(md);
+                    matrix_engine->matrix_rename->set_preg_RAT(md, pmd);
+                    matrix_engine->matrix_rename->set_PR_vld(pmd, true); //mark the new acc register as valid, 为了让一开始acc操作能读取自己这个acc寄存器跟自己相加!!!注意要放在setpregrat后面，保证置为valid
+                } else {
+                    pmd = matrix_engine->matrix_rename->get_preg_RAT(md);
+                    matrix_engine->matrix_rename->regLock(pmd);
+                    old_dst = 99; //没有更换目标寄存器
+                }
+                // pmd = matrix_engine->matrix_rename->get_freeAccReg();
+                matrix_sbe->dst_memdep_idx = matrix_engine->matrix_rob->set_md_entry(md);
+                matrix_sbe->src1_memdep_idx = matrix_engine->matrix_rob->mdtail[ms1];
+                matrix_sbe->src2_memdep_idx = matrix_engine->matrix_rob->mdtail[ms2];
+                matrix_sbe->src3_memdep_idx = matrix_engine->matrix_rob->mdtail[md]; //special! src3 represent C in D = A*B + C
+            }
+
+            pms1 = matrix_engine->matrix_rename->get_preg_RAT(ms1);
+            pms2 = matrix_engine->matrix_rename->get_preg_RAT(ms2);
+            matrix_engine->matrix_rename->regLock(pms1);
+            matrix_engine->matrix_rename->regLock(pms2);
+            matrix_sbe->set_renamed_src1(pms1);
+            matrix_sbe->set_renamed_src2(pms2);
+            matrix_sbe->set_dst_lrf_num(md);
+            matrix_sbe->set_dst_prf_num(pmd);
+            matrix_sbe->set_old_dst(old_dst);
+
+            matrix_sbe->set_cfg_size(matrix_engine->get_sizeN(), matrix_engine->get_sizeM(), matrix_engine->get_sizeK());
+        } else if (minst.ismadd()||minst.ismsub()||minst.ismshiftr()||minst.ismmul()){
+            if(md < 4)
+                panic("THIS is A FAULT INSTRUCTION");
+            else if(md < 8 && md >= 4){
+                if(matrix_engine->matrix_rename->accInitial[md-4] == true){
+                    pmd = matrix_engine->matrix_rename->get_preg_RAT(md);
+                    matrix_engine->matrix_rename->regLock(pmd);
+                    old_dst = 99; //没有更换目标寄存器都不会在rob中释放
+                } else {
+                    pmd = matrix_engine->matrix_rename->get_freeAccReg();
+                    matrix_engine->matrix_rename->regLock(pmd);
+                    old_dst = matrix_engine->matrix_rename->get_preg_RAT(md);
+                    matrix_engine->matrix_rename->set_preg_RAT(md, pmd);
+                }
+                
+                pms1 = matrix_engine->matrix_rename->get_preg_RAT(ms1);
+                pms2 = matrix_engine->matrix_rename->get_preg_RAT(ms2);
+                matrix_engine->matrix_rename->regLock(pms1);
+                matrix_engine->matrix_rename->regLock(pms2);
+                matrix_sbe->set_renamed_src1(pms1);
+                matrix_sbe->set_renamed_src2(pms2);
+                matrix_sbe->set_dst_lrf_num(md);
+                matrix_sbe->set_dst_prf_num(pmd);
+                matrix_sbe->set_old_dst(old_dst);
+
+                matrix_sbe->set_cfg_size(matrix_engine->get_sizeN(), matrix_engine->get_sizeM(), matrix_engine->get_sizeK());
+            }
+            matrix_sbe->dst_memdep_idx = matrix_engine->matrix_rob->set_md_entry(md);
+            matrix_sbe->src1_memdep_idx = matrix_engine->matrix_rob->mdtail[ms1];
+            matrix_sbe->src2_memdep_idx = matrix_engine->matrix_rob->mdtail[ms2];
+        } else if (minst.ismzero()){
+            matrix_engine->matrix_rename->setAcc(md, true);
+        }
+
     }
 }
 
@@ -173,6 +245,10 @@ void MatrixDispatcher::set_rob_entry(RiscvISA::RiscvMatrixInst &minst, ScoreBoar
     if(!minst.isStore()){
         uint32_t rob_entry = matrix_engine->matrix_rob->set_rob_entry(matrix_sbe->get_dst_lrf_num(), matrix_sbe->get_dst_prf_num(), matrix_sbe->get_old_dst(), old_dst_vld);
         matrix_sbe->set_rob_entry(rob_entry);
+    }
+
+    if(minst.isLoad() || minst.isStore()){
+        matrix_engine->matrix_rob->meminst_num++;
     }
 }
 
@@ -214,6 +290,11 @@ void MatrixDispatcher::sendInstToCQ(ScoreBoard_Entry* matrix_sbe, uint64_t src1_
         }
 
     // config_stall = true;
+}
+
+void MatrixDispatcher::recvMzero(ScoreBoard_Entry* matrix_sbe)
+{
+    DPRINTF(MatrixDispatcher, "recv mzero inst md = %d\n", matrix_sbe->_minst->md());
 }
 
 void MatrixDispatcher::sendInstToMQ(ScoreBoard_Entry* matrix_sbe, uint64_t src1_value, uint64_t src2_value, ThreadContext *tc)
@@ -282,7 +363,13 @@ bool MatrixDispatcher::dispatchGrant(RiscvISA::RiscvMatrixInst &minst)
         queue_notfull = true; //FIXME: Maybe there is some stall here?
         XY = false;
     }
-    bool free_prf_avaliable = !matrix_engine->matrix_rename->freeList_empty();
+    // bool free_prf_avaliable = !matrix_engine->matrix_rename->freeList_empty();
+    bool free_prf_avaliable = false;
+    if(minst.md() < 4){
+        free_prf_avaliable = !matrix_engine->matrix_rename->freeTileList_empty();
+    } else if (minst.md() < 8 && minst.md() >=4){
+        free_prf_avaliable = !matrix_engine->matrix_rename->freeAccList_empty();
+    }
     DPRINTF(MatrixDispatcher, "rob:%d, M/AQ:%d, free_pr:%d\n", rob_entry_notfull, queue_notfull, free_prf_avaliable);
     if(!free_prf_avaliable){
         WaitingForReg++;
@@ -360,7 +447,11 @@ bool MatrixDispatcher::isOccupied()
 }
 void MatrixDispatcher::evaluate()
 {
-    bool free_prf_avaliable = !matrix_engine->matrix_rename->freeList_empty();
+    // bool free_prf_avaliable = !matrix_engine->matrix_rename->freeList_empty();
+
+    // if(matrix_engine->ew_unit->isIdle() == true){
+    //     matrix_engine->ew_unit->startTicking();
+    // }
 
     bool LaneisWorking = false;
     testnum++;
@@ -381,8 +472,11 @@ void MatrixDispatcher::evaluate()
         allLaneisFree++;
     }
 
-    if(!matrix_engine->matrix_rename->freeList_empty()){
-        hasFreeReg++;
+    if(!matrix_engine->matrix_rename->freeTileList_empty()){
+        hasFreeTileReg++;
+    }
+    if(!matrix_engine->matrix_rename->freeAccList_empty()){
+        hasFreeAccReg++;
     }
     // if(!free_prf_avaliable){
     //     WaitingForReg++;
@@ -456,7 +550,7 @@ void MatrixDispatcher::evaluate()
         ready_to_issue = true;
     } else if((*mentry)->matrix_sbe._minst->isStore() && !(*mentry)->matrix_sbe.isSent){
         // ready_to_issue = matrix_engine->matrix_rename->get_RAT_vld(mentry->matrix_sbe.get_renamed_src3());
-        ready_to_issue = matrix_engine->matrix_rename->get_PR_vld((*mentry)->matrix_sbe.get_renamed_src3());
+        ready_to_issue = matrix_engine->matrix_rename->get_PR_vld((*mentry)->matrix_sbe.get_renamed_src3()) && matrix_engine->matrix_rob->raw_solved((*mentry)->matrix_sbe.ms3, (*mentry)->matrix_sbe.src3_memdep_idx);
         MQread++;
     }
     if(ready_to_issue || (*mentry)->matrix_sbe.isSent){
@@ -474,9 +568,17 @@ void MatrixDispatcher::evaluate()
                 // }
                 //Load MB once a row!
                 success = matrix_engine->matrix_mmu->readMatrixMem(addr_index, (*mentry)->matrix_sbe.get_rs2_value(), &((*mentry)->tc), 0, (*mentry)->matrix_sbe.get_dst_prf_num(), [this, matrix_sbe_copy = (*(*mentry)).matrix_sbe, mentry_copy = (*mentry)](uint8_t *data, uint8_t size){
-                    for(uint8_t i = 0; i < matrix_sbe_copy.get_rs2_value(); i++){
-                        this->matrix_engine->matrix_reg->wtreg_byte(matrix_sbe_copy.get_dst_prf_num(), i % (this->matrix_engine->matrix_reg->bank_num), i / (this->matrix_engine->matrix_reg->bank_num), matrix_sbe_copy.get_executed_num(), data[i]);
+                    if(matrix_sbe_copy.get_dst_lrf_num() < 4){
+                        for(uint8_t i = 0; i < matrix_sbe_copy.get_rs2_value(); i++){
+                            this->matrix_engine->matrix_reg->wtreg_byte(matrix_sbe_copy.get_dst_prf_num(), i % (this->matrix_engine->matrix_reg->bank_num), i / (this->matrix_engine->matrix_reg->bank_num), matrix_sbe_copy.get_executed_num(), data[i]);
+                        }
+                    } else if (matrix_sbe_copy.get_dst_lrf_num() < 8 && matrix_sbe_copy.get_dst_lrf_num() >= 4){
+                        for(uint8_t i = 0; i < (matrix_sbe_copy.get_rs2_value()/4); i++){
+                            uint32_t data_sp = static_cast<uint32_t>(data[4*i]) | (static_cast<uint32_t>(data[4*i+1]) << 8) | (static_cast<uint32_t>(data[4*i+2]) << 16) | (static_cast<uint32_t>(data[4*i+3]) << 24);
+                            this->matrix_engine->matrix_reg->wtreg_int32(matrix_sbe_copy.get_dst_prf_num(), i / 2, matrix_sbe_copy.get_executed_num(), i%2, data_sp);
+                        }
                     }
+
                     this->matrix_engine->matrix_reg->rls(matrix_sbe_copy.get_dst_prf_num());
                     if(data[31] == 0){
                         DPRINTF(MatrixDispatcher, "find zero in loading stage!!\n");
@@ -491,8 +593,15 @@ void MatrixDispatcher::evaluate()
                 // }
                 //Load MA once a row!
                 success = matrix_engine->matrix_mmu->readMatrixMem(addr_index, (*mentry)->matrix_sbe.get_rs2_value(), &((*mentry)->tc), 0, (*mentry)->matrix_sbe.get_dst_prf_num(), [this, matrix_sbe_copy = (*(*mentry)).matrix_sbe, mentry_copy = (*mentry)](uint8_t *data, uint8_t size){
-                    for(uint8_t i = 0; i < matrix_sbe_copy.get_rs2_value(); i++){
-                        this->matrix_engine->matrix_reg->wtreg_byte(matrix_sbe_copy.get_dst_prf_num(), i % (this->matrix_engine->matrix_reg->bank_num), i / (this->matrix_engine->matrix_reg->bank_num), matrix_sbe_copy.get_executed_num(), data[i]);
+                    if(matrix_sbe_copy.get_dst_lrf_num() < 4){
+                        for(uint8_t i = 0; i < matrix_sbe_copy.get_rs2_value(); i++){
+                            this->matrix_engine->matrix_reg->wtreg_byte(matrix_sbe_copy.get_dst_prf_num(), i % (this->matrix_engine->matrix_reg->bank_num), i / (this->matrix_engine->matrix_reg->bank_num), matrix_sbe_copy.get_executed_num(), data[i]);
+                        }
+                    } else if (matrix_sbe_copy.get_dst_lrf_num() < 8 && matrix_sbe_copy.get_dst_lrf_num() >= 4){
+                        for(uint8_t i = 0; i < (matrix_sbe_copy.get_rs2_value()/4); i++){
+                            uint32_t data_sp = static_cast<uint32_t>(data[4*i]) | (static_cast<uint32_t>(data[4*i+1]) << 8) | (static_cast<uint32_t>(data[4*i+2]) << 16) | (static_cast<uint32_t>(data[4*i+3]) << 24);
+                            this->matrix_engine->matrix_reg->wtreg_int32(matrix_sbe_copy.get_dst_prf_num(), i / 2, matrix_sbe_copy.get_executed_num(), i%2, data_sp);
+                        }
                     }
                     this->matrix_engine->matrix_reg->rls(matrix_sbe_copy.get_dst_prf_num());
                     mentry_copy->matrix_sbe.load();
@@ -522,8 +631,18 @@ void MatrixDispatcher::evaluate()
                     continue;
                 }
                 uint8_t* mreg_row_data = new uint8_t[(*mentry)->matrix_sbe.get_rs2_value()];
-                for(uint32_t j = 0; j < (*mentry)->matrix_sbe.get_rs2_value(); j++){
-                    mreg_row_data[j] = matrix_engine->matrix_reg->rdreg_byte((*mentry)->matrix_sbe.get_renamed_src3(), j % matrix_engine->matrix_reg->bank_num, j / matrix_engine->matrix_reg->bank_num, (*mentry)->matrix_sbe.get_executed_num());
+                if((*mentry)->matrix_sbe.get_renamed_src3() < 16){
+                    for(uint32_t j = 0; j < (*mentry)->matrix_sbe.get_rs2_value(); j++){
+                        mreg_row_data[j] = matrix_engine->matrix_reg->rdreg_byte((*mentry)->matrix_sbe.get_renamed_src3(), j % matrix_engine->matrix_reg->bank_num, j / matrix_engine->matrix_reg->bank_num, (*mentry)->matrix_sbe.get_executed_num());
+                    }
+                } else if ((*mentry)->matrix_sbe.get_renamed_src3() < 32 && (*mentry)->matrix_sbe.get_renamed_src3() >= 16){
+                    for(uint32_t j = 0; j < ((*mentry)->matrix_sbe.get_rs2_value()/4); j++){
+                        uint32_t data_sp = matrix_engine->matrix_reg->rdreg_int32((*mentry)->matrix_sbe.get_renamed_src3(), j / 2, (*mentry)->matrix_sbe.get_executed_num(), j % 2);
+                        mreg_row_data[4*j] = static_cast<uint8_t>(data_sp & 0xFF);
+                        mreg_row_data[4*j+1] = static_cast<uint8_t>((data_sp >> 8) & 0xFF); 
+                        mreg_row_data[4*j+2] = static_cast<uint8_t>((data_sp >> 16) & 0xFF);
+                        mreg_row_data[4*j+3] = static_cast<uint8_t>((data_sp >> 24) & 0xFF);
+                    }
                 }
                 success = matrix_engine->matrix_mmu->writeMatrixMem(addr_index, mreg_row_data, (*mentry)->matrix_sbe.get_rs2_value(), &((*mentry)->tc), 0, [this, matrix_sbe_copy = (*(*mentry)).matrix_sbe, mentry_copy = (*mentry), mreg_row_data](){
                     this->matrix_engine->matrix_reg->rls(matrix_sbe_copy.get_renamed_src3());
@@ -537,8 +656,18 @@ void MatrixDispatcher::evaluate()
                     continue;
                 }
                 uint8_t* mreg_row_data = new uint8_t[(*mentry)->matrix_sbe.get_rs2_value()];
-                for(uint32_t j = 0; j < (*mentry)->matrix_sbe.get_rs2_value(); j++){
-                    mreg_row_data[j] = matrix_engine->matrix_reg->rdreg_byte((*mentry)->matrix_sbe.get_renamed_src3(), j % matrix_engine->matrix_reg->bank_num, j / matrix_engine->matrix_reg->bank_num, (*mentry)->matrix_sbe.get_executed_num());
+                if((*mentry)->matrix_sbe.get_renamed_src3() < 16){
+                    for(uint32_t j = 0; j < (*mentry)->matrix_sbe.get_rs2_value(); j++){
+                        mreg_row_data[j] = matrix_engine->matrix_reg->rdreg_byte((*mentry)->matrix_sbe.get_renamed_src3(), j % matrix_engine->matrix_reg->bank_num, j / matrix_engine->matrix_reg->bank_num, (*mentry)->matrix_sbe.get_executed_num());
+                    }
+                } else if ((*mentry)->matrix_sbe.get_renamed_src3() < 32 && (*mentry)->matrix_sbe.get_renamed_src3() >= 16){
+                    for(uint32_t j = 0; j < ((*mentry)->matrix_sbe.get_rs2_value()/4); j++){
+                        uint32_t data_sp = matrix_engine->matrix_reg->rdreg_int32((*mentry)->matrix_sbe.get_renamed_src3(), j / 2, (*mentry)->matrix_sbe.get_executed_num(), j % 2);
+                        mreg_row_data[4*j] = static_cast<uint8_t>(data_sp & 0xFF);
+                        mreg_row_data[4*j+1] = static_cast<uint8_t>((data_sp >> 8) & 0xFF); 
+                        mreg_row_data[4*j+2] = static_cast<uint8_t>((data_sp >> 16) & 0xFF);
+                        mreg_row_data[4*j+3] = static_cast<uint8_t>((data_sp >> 24) & 0xFF);
+                    }
                 }
                 success = matrix_engine->matrix_mmu->writeMatrixMem(addr_index, mreg_row_data, (*mentry)->matrix_sbe.get_rs2_value(), &((*mentry)->tc), 0, [this, matrix_sbe_copy = (*(*mentry)).matrix_sbe, mentry_copy = (*mentry), mreg_row_data](){
                     this->matrix_engine->matrix_reg->rls(matrix_sbe_copy.get_renamed_src3());
@@ -572,7 +701,9 @@ void MatrixDispatcher::evaluate()
                 // matrix_engine->matrix_reg->rls_wrport();
                 DPRINTF(MatrixDispatcher, "MQ: pr idx %d is valid now\n", (*mentry)->matrix_sbe.get_dst_prf_num());
                 matrix_engine->matrix_rob->set_rob_entry_executed((*mentry)->matrix_sbe.get_rob_entry());
+                matrix_engine->matrix_rob->set_md_entry_valid((*mentry)->matrix_sbe.ms3, (*mentry)->matrix_sbe.dst_memdep_idx);
                 mentry = Memory_Queue.erase(mentry);
+                matrix_engine->matrix_rob->meminst_num--;
                 XY = false;//try to not depend on the config to reset the XY
             } else if((*mentry)->matrix_sbe.isSendAndWait && (*mentry)->matrix_sbe.get_store_cnt() == (*mentry)->matrix_sbe.get_cfg_sizeM()) {
                 // store commit
@@ -582,6 +713,7 @@ void MatrixDispatcher::evaluate()
                 std::cout << "Before erase, size: " << Memory_Queue.size() << std::endl;
                 mentry = Memory_Queue.erase(mentry);
                 std::cout << "After erase, size: " << Memory_Queue.size() << std::endl;
+                matrix_engine->matrix_rob->meminst_num--;
             } else {
                 ++mentry;
             }
@@ -594,7 +726,9 @@ void MatrixDispatcher::evaluate()
                 // matrix_engine->matrix_reg->rls((*mentry)->matrix_sbe.get_dst_prf_num());
                 DPRINTF(MatrixDispatcher, "MQ: pr idx %d is valid now\n", (*mentry)->matrix_sbe.get_dst_prf_num());
                 matrix_engine->matrix_rob->set_rob_entry_executed((*mentry)->matrix_sbe.get_rob_entry());
+                matrix_engine->matrix_rob->set_md_entry_valid((*mentry)->matrix_sbe.ms3, (*mentry)->matrix_sbe.dst_memdep_idx);
                 mentry = Memory_Queue.erase(mentry);
+                matrix_engine->matrix_rob->meminst_num--;
                 XY = true;
             } else if((*mentry)->matrix_sbe.isSendAndWait && (*mentry)->matrix_sbe.get_store_cnt() == (*mentry)->matrix_sbe.get_cfg_sizeM()){
                 //store commit 
@@ -604,6 +738,7 @@ void MatrixDispatcher::evaluate()
                 std::cout << "Before erase, size: " << Memory_Queue.size() << std::endl;
                 mentry = Memory_Queue.erase(mentry);
                 std::cout << "After erase, size: " << Memory_Queue.size() << std::endl;
+                matrix_engine->matrix_rob->meminst_num--;
             } else{
                 ++mentry;
             }
@@ -617,6 +752,7 @@ void MatrixDispatcher::evaluate()
 
     if(Arithmetic_Queue.size()!=0)
     {
+        //NOTE: NOW ONLY SUPPORT OoO ISSUE!!!
         // ArithQueueEntry* aentry;
         // uint32_t issue_range = (OoO) ? AQ_depth : 1;
         // uint32_t issue_range = (OoO) ? Arithmetic_Queue.size() : 1;
@@ -624,28 +760,39 @@ void MatrixDispatcher::evaluate()
         // for(uint32_t i = 0; i < issue_range; i++)
         bool freelane_waitinst = false;
         bool waitforlane = false;
+        bool waitforewu = false;
         for(auto aentry = Arithmetic_Queue.begin(); aentry != Arithmetic_Queue.end();)
         {
             // aentry = Arithmetic_Queue[i];
-
+            // ====
             //judge the inst status
             if((*aentry)->matrix_sbe.isIssue&&(!(*aentry)->matrix_sbe.isDone)){
                 //just issued but have not done
-                if(matrix_engine->matrix_lanes[(*aentry)->matrix_sbe.lane_idx]->tranz_minst.instDone){
-                    (*aentry)->matrix_sbe.isDone = true;
+                if((*aentry)->matrix_sbe._minst->ismmacc()){
+                    if(matrix_engine->ew_unit->isDone((*aentry)->matrix_sbe.lane_idx)){
+                        (*aentry)->matrix_sbe.isDone = true;
+                    }
+                } else if ((*aentry)->matrix_sbe._minst->ismmul()||(*aentry)->matrix_sbe._minst->ismadd()||(*aentry)->matrix_sbe._minst->ismsub()||(*aentry)->matrix_sbe._minst->ismshiftr()){
+
+                    if(matrix_engine->ew_unit->isDone((*aentry)->matrix_sbe.ewu_idx)){
+                        (*aentry)->matrix_sbe.isDone = true;
+                    }
                 }
+
                 ++aentry;
             }else if((*aentry)->matrix_sbe.isDone){
                     // inst has been executed
+                    matrix_engine->ew_unit->resetDone((*aentry)->matrix_sbe.ewu_idx);
                     matrix_engine->matrix_rename->set_PR_vld((*aentry)->matrix_sbe.get_dst_prf_num(), true);
                     matrix_engine->matrix_rename->regrls((*aentry)->matrix_sbe.get_dst_prf_num());
                     matrix_engine->matrix_rename->regrls((*aentry)->matrix_sbe.get_renamed_src1());
                     matrix_engine->matrix_rename->regrls((*aentry)->matrix_sbe.get_renamed_src2());
                     DPRINTF(MatrixDispatcher, "AQ: pr idx %d is valid now\n", (*aentry)->matrix_sbe.get_dst_prf_num());
                     matrix_engine->matrix_rob->set_rob_entry_executed((*aentry)->matrix_sbe.get_rob_entry());
+                    matrix_engine->matrix_rob->set_md_entry_valid((*aentry)->matrix_sbe.md, (*aentry)->matrix_sbe.dst_memdep_idx);
                     // auto it = Arithmetic_Queue.begin() + i;
                     aentry = Arithmetic_Queue.erase(aentry);
-
+                //====等会改，改完了现在
 
                     // delete aentry->matrix_sbe;
                     // delete aentry;
@@ -654,16 +801,29 @@ void MatrixDispatcher::evaluate()
                 bool ready_to_issue = false;
                 if((*aentry)->matrix_sbe._minst->isMatrixInstArith()){
                     // ready_to_issue = matrix_engine->matrix_rename->get_RAT_vld(aentry->matrix_sbe.get_renamed_src1()) && matrix_engine->matrix_rename->get_RAT_vld(aentry->matrix_sbe.get_renamed_src2());
-                    ready_to_issue = matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src1()) && matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src2());
+                    ready_to_issue = matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src1()) && matrix_engine->matrix_rob->raw_solved((*aentry)->matrix_sbe.ms1, (*aentry)->matrix_sbe.src1_memdep_idx) && matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src2()) && matrix_engine->matrix_rob->raw_solved((*aentry)->matrix_sbe.ms2, (*aentry)->matrix_sbe.src2_memdep_idx);
 
+                    //为了让第一次访问acc的时候能够正常使用
+                    if((*aentry)->matrix_sbe._minst->ismmacc()){
+                        if (matrix_engine->matrix_rename->accInitial[(*aentry)->matrix_sbe.get_dst_prf_num()-16] == true){
+                            ready_to_issue = ready_to_issue && true;
+                            if (ready_to_issue){
+                                matrix_engine->matrix_rename->accInitial[(*aentry)->matrix_sbe.get_dst_prf_num()-16] = false;
+                            }
+                        } else {
+                            ready_to_issue = ready_to_issue && matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_dst_prf_num()) && matrix_engine->matrix_rob->macc_raw_solved((*aentry)->matrix_sbe.md, (*aentry)->matrix_sbe.src3_memdep_idx);
+                        }
+                    }
                     DPRINTF(MatrixDispatcher, "This aentry need check %d is %d, %d is %d \n", (*aentry)->matrix_sbe.get_renamed_src1(), matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src1()), (*aentry)->matrix_sbe.get_renamed_src2(), matrix_engine->matrix_rename->get_PR_vld((*aentry)->matrix_sbe.get_renamed_src2()));
                     DPRINTF(MatrixDispatcher, "ready to issue is %d\n", ready_to_issue);
                 }
                 //May be there will be more types of instructions here
-                if(ready_to_issue){
+                if(ready_to_issue || (*aentry)->matrix_sbe.canIssue){
+                    matrix_engine->matrix_rename->set_PR_vld((*aentry)->matrix_sbe.get_dst_prf_num(), false);
+                    (*aentry)->matrix_sbe.canIssue = true;
                     bool success = false;
-                    uint8_t lane; // used to choose one lane to issue the inst!
-                    if((*aentry)->matrix_sbe._minst->isMatrixInstArith()){
+                    if((*aentry)->matrix_sbe._minst->ismmacc()){
+                        uint8_t lane; // used to choose one lane to issue the inst!
                         for(uint8_t j = 0; j < matrix_engine->lane_num; j++){
                             if(matrix_engine->matrix_lanes[j]->isOccupied() == false){
                                 success = true;
@@ -672,13 +832,34 @@ void MatrixDispatcher::evaluate()
                             }
                         }
                         if(success){
-                            matrix_engine->matrix_lanes[lane]->issue_inst(&((*aentry)->matrix_sbe));
                             (*aentry)->matrix_sbe.isIssue = true;
                             (*aentry)->matrix_sbe.lane_idx = lane;
+                            (*aentry)->matrix_sbe.ewu_idx = lane;
+                            matrix_engine->matrix_lanes[lane]->issue_inst(&((*aentry)->matrix_sbe));
                             DPRINTF(MatrixDispatcher, "Send instruction to the Lane:%d\n", lane);
                             AQread++;
                         } else{
                             waitforlane = true;
+                        }
+                    } else if ((*aentry)->matrix_sbe._minst->ismadd()||(*aentry)->matrix_sbe._minst->ismsub()||(*aentry)->matrix_sbe._minst->ismshiftr()||(*aentry)->matrix_sbe._minst->ismmul()){
+                        uint8_t ewu_idx; // used to choose one lane to issue the inst!
+                        for(uint8_t j = 0; j < matrix_engine->lane_num; j++){
+                            if(matrix_engine->ew_unit->isOccupied(j) == false){
+                                success = true;
+                                ewu_idx = j;
+                                break;
+                            }
+                        }
+                        if(success){
+                            if(matrix_engine->ew_unit->isIdle() == true){
+                                matrix_engine->ew_unit->startTicking();
+                            }
+                            (*aentry)->matrix_sbe.isIssue = true;
+                            (*aentry)->matrix_sbe.ewu_idx = ewu_idx;
+                            (*aentry)->matrix_sbe.lane_idx = ewu_idx;
+                            matrix_engine->ew_unit->recv_opera((*aentry)->matrix_sbe, ewu_idx, (*aentry)->matrix_sbe._minst->isSigned());
+                        } else{
+                            waitforewu = true;
                         }
                     }
                 } else {
@@ -698,6 +879,9 @@ void MatrixDispatcher::evaluate()
         }
         if(waitforlane){
             WaitingForLane++;
+        }
+        if(waitforewu){
+            WaitingForEWU++;
         }
     }
 

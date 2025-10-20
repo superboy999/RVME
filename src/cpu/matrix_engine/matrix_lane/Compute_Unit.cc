@@ -51,6 +51,7 @@ void ComputeUnit::regStats()
 
 void ComputeUnit::get_unsigned_xdata(uint8_t xdata)
 {
+    DPRINTF(Compute_Unit, "get xdata = %d\n", xdata);
     u_data_x = xdata;
     isSigned = false;
     xdata_ready = true;
@@ -58,6 +59,7 @@ void ComputeUnit::get_unsigned_xdata(uint8_t xdata)
 
 void ComputeUnit::get_unsigned_ydata(uint8_t ydata)
 {
+    DPRINTF(Compute_Unit, "get ydata = %d\n", ydata);
     u_data_y = ydata;
     isSigned = false;
     ydata_ready = true;
@@ -120,30 +122,43 @@ void ComputeUnit::output_data()
     //     DPRINTF(Compute_Unit, "[%d,%d]unsignd data = %u \n", coordinate[0], coordinate[1], unsigned_data);
     // }
     
-    // ADD quantize and activation function body 
-    if(en_activate){
-        if(isSigned){
-            activate_signed_data = activation_layer->activate(s_pingpong[output_pp_idx]);
-            q_signed_data = quantization_layer->quantize(activate_signed_data);
-            if(coordinate[0] > 8){
-                assert(coordinate[0] < 8);
-                assert(coordinate[1] < 8);
-            }
-            zbuffer->receive_data(q_signed_data, coordinate[0], coordinate[1]);
-        } else {
-            activate_unsigned_data = activation_layer->activate(u_pingpong[output_pp_idx]);
-            q_unsigned_data = quantization_layer->quantize(activate_unsigned_data);
-            zbuffer->receive_data(q_unsigned_data, coordinate[0], coordinate[1]);
+    // ADD quantize and activation function body ==================================
+    // if(en_activate){
+    //     if(isSigned){
+    //         activate_signed_data = activation_layer->activate(s_pingpong[output_pp_idx]);
+    //         q_signed_data = quantization_layer->quantize(activate_signed_data);
+    //         if(coordinate[0] > 8){
+    //             assert(coordinate[0] < 8);
+    //             assert(coordinate[1] < 8);
+    //         }
+    //         zbuffer->receive_data(q_signed_data, coordinate[0], coordinate[1]);
+    //     } else {
+    //         activate_unsigned_data = activation_layer->activate(u_pingpong[output_pp_idx]);
+    //         q_unsigned_data = quantization_layer->quantize(activate_unsigned_data);
+    //         zbuffer->receive_data(q_unsigned_data, coordinate[0], coordinate[1]);
+    //     }
+    // } else {
+    //     if(isSigned){
+    //         q_signed_data = quantization_layer->quantize(s_pingpong[output_pp_idx]);
+    //         zbuffer->receive_data(q_signed_data, coordinate[0], coordinate[1]);
+    //     } else {
+    //         q_unsigned_data = quantization_layer->quantize(u_pingpong[output_pp_idx]);
+    //         zbuffer->receive_data(q_unsigned_data, coordinate[0], coordinate[1]);
+    //     }
+    // }
+    // ADD quantize and activation function body ==================================
+    if(isSigned){
+        if(coordinate[0] > 8){
+            assert(coordinate[0] < 8);
+            assert(coordinate[1] < 8);
         }
+        zbuffer->receive_data(s_pingpong[output_pp_idx], coordinate[0], coordinate[1]);
+        DPRINTF(Compute_Unit, "[%d,%d]send signed data = %d to ZBuffer\n", coordinate[0], coordinate[1], s_pingpong[output_pp_idx]);
     } else {
-        if(isSigned){
-            q_signed_data = quantization_layer->quantize(s_pingpong[output_pp_idx]);
-            zbuffer->receive_data(q_signed_data, coordinate[0], coordinate[1]);
-        } else {
-            q_unsigned_data = quantization_layer->quantize(u_pingpong[output_pp_idx]);
-            zbuffer->receive_data(q_unsigned_data, coordinate[0], coordinate[1]);
-        }
+        zbuffer->receive_data(u_pingpong[output_pp_idx], coordinate[0], coordinate[1]);
+        DPRINTF(Compute_Unit, "[%d,%d]send unsigned data = %u to ZBuffer\n", coordinate[0], coordinate[1], u_pingpong[output_pp_idx]);
     }
+
     output_cnt = output_cnt + 1;
     output_done = (output_cnt == psum) ? true : false;
     // delete[] unsigned_buf;

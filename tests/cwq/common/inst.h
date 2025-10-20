@@ -1,7 +1,7 @@
 /*** 
  * @Author: superboy
  * @Date: 2024-06-19 15:27:40
- * @LastEditTime: 2025-04-09 03:09:09
+ * @LastEditTime: 2025-10-16 01:14:05
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/tests/cwq/common/inst.h
@@ -61,92 +61,92 @@ inline static void mldb(uint8_t mreg_idx, uint64_t *start_addr, uint64_t stride)
     if (mreg_idx == 0) {
         __asm__ __volatile__ ("mldb m0, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 1) {
         __asm__ __volatile__ ("mldb m1, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 2) {
         __asm__ __volatile__ ("mldb m2, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 3) {
         __asm__ __volatile__ ("mldb m3, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 4) {
         __asm__ __volatile__ ("mldb m4, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 5) {
         __asm__ __volatile__ ("mldb m5, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 6) {
         __asm__ __volatile__ ("mldb m6, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     } else if (mreg_idx == 7) {
         __asm__ __volatile__ ("mldb m7, %0, (%1)"
                                 :
-                                : "r"(stride), "r"(start_addr));
+                                : "r"(stride), "r"(start_addr): "memory");
     }
 }
 
 inline static void mldb_m0(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m0, %0, (%1)"
+    __asm__ __volatile__ ("mldb m0, %1, (%2)"
                             :
-                            : "r"(stride), "r"(start_addr));
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m1(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m1, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m1, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m2(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m2, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m2, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m3(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m3, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m3, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m4(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m4, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m4, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m5(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m5, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m5, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m6(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m6, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m6, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void mldb_m7(uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mldb m7, %0, (%1)"
-                                :
-                            : "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mldb m7, %1, (%2)"
+                            :
+                            : "m" (*start_addr), "r"(stride), "r"(start_addr): "memory");
 }
 
 //Matrix multiplication: int8 datatype, signed x signed
@@ -156,12 +156,20 @@ inline static void matrixmul_int8_ss(int8_t destMregIdx, int8_t src1MregIdx, int
                             : 
                             : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
 }
+//Matrix multiplication: int8 datatype, unsigned x unsigned
+inline static void matrixmul_int8_uu(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("mmaqau.b m%0, m%1, m%2"
+                            : 
+                            : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
+}
+
 
 inline static void mstb(int8_t srcMregIdx, uint64_t *start_addr, uint64_t stride)
 {
-    __asm__ __volatile__ ("mstb m%0, %1, (%2)"
-                                :
-                            : "i" (srcMregIdx), "r"(stride), "r"(start_addr));
+    __asm__ __volatile__ ("mstb m%1, %2, (%3)"
+                                : "=m" (*start_addr)
+                            : "i" (srcMregIdx), "r"(stride), "r"(start_addr): "memory");
 }
 
 inline static void madd(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
@@ -170,23 +178,71 @@ inline static void madd(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregI
                             : 
                             : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
 }
+inline static void msub(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("msub.s.mm m%0, m%1, m%2"
+                            : 
+                            : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
+}
+inline static void mmul(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("mmul.s.mm m%0, m%1, m%2"
+                            : 
+                            : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
+}
+inline static void msra(int8_t destMregIdx, int8_t src1MregIdx, int8_t src2MregIdx)
+{
+    __asm__ __volatile__ ("msra.s.mm m%0, m%1, m%2"
+                            : 
+                            : "i" (destMregIdx), "i"(src2MregIdx), "i"(src1MregIdx));
+}
+
+inline static void mzero(int8_t destMregIdx)
+{
+    __asm__ __volatile__ ("mzero m%0"
+                            : 
+                            : "i" (destMregIdx));
+}
+
+// static void inner_mmul(uint64_t *start_addr_A, uint64_t *start_addr_B)
+// {
+//     uint64_t stride = 32 ; //indicate the row size
+//     uint64_t stride_post = 8; //indicate the row size
+//     // mcfgmi(8);
+//     // mcfgki(32);
+//     // mcfgni(8);
+//     mldb_m0((uint64_t *)start_addr_A, stride);
+//     mldb_m2((uint64_t *)start_addr_B, stride);
+//     matrixmul_int8_ss(4, 0, 2);
+//     mldb_m1((uint64_t *)start_addr_A+1*stride_post*stride, stride);
+//     matrixmul_int8_ss(5, 1, 2);
+//     mldb_m3((uint64_t *)start_addr_B+1*stride_post*stride, stride);
+//     matrixmul_int8_ss(6, 1, 3);
+//     matrixmul_int8_ss(7, 0, 3);
+// }
 
 static void inner_mmul(uint64_t *start_addr_A, uint64_t *start_addr_B)
 {
-    uint64_t stride = 32 * sizeof(int8_t); //indicate the row size
-    uint64_t stride_post = 8 * sizeof(int8_t); //indicate the row size
-    // mcfgmi(8);
-    // mcfgki(32);
-    // mcfgni(8);
-    mldb_m0((uint64_t *)start_addr_A, stride);
-    mldb_m2((uint64_t *)start_addr_B, stride);
+    const uint64_t stride       = 32;   // 行长 32 B
+    const uint64_t stride_post  = 8;    // 行数 8  → 32×8 = 256 B
+    const uint64_t OFFSET_BYTES = stride * stride_post;  // = 256 B
+
+    /* 第 1 片 */
+    mldb_m0(start_addr_A, stride);             // A base
+    mldb_m2(start_addr_B, stride);             // B base
     matrixmul_int8_ss(4, 0, 2);
-    mldb_m1((uint64_t *)start_addr_A+1*stride_post*stride, stride);
+
+    /* 第 2 片：基址 + 256 B */
+    uint8_t  *nextA = (uint8_t*)start_addr_A + OFFSET_BYTES;
+    mldb_m1((uint64_t*)nextA, stride);
     matrixmul_int8_ss(5, 1, 2);
-    mldb_m3((uint64_t *)start_addr_B+1*stride_post*stride, stride);
+
+    uint8_t  *nextB = (uint8_t*)start_addr_B + OFFSET_BYTES;
+    mldb_m3((uint64_t*)nextB, stride);
     matrixmul_int8_ss(6, 1, 3);
     matrixmul_int8_ss(7, 0, 3);
 }
+
 
 static void outer_firstN_init(uint64_t *start_addr_A, uint64_t *start_addr_B, uint64_t *start_addr_C)
 {

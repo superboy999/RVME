@@ -8,3 +8,4 @@ class MatrixEngineInterface(SimObject):
 
     matrix_engine = Param.MatrixEngine("Matrix Engine In Interface")
     # matrix_dispatcher = Param.MatrixDispatcher("Matrix Dispatcher In Interface")
+    inst_buffer = Param.InstructionBuffer("Instruction Buffer In Interface")

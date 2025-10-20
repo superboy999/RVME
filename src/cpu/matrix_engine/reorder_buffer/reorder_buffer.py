@@ -7,3 +7,4 @@ class ReorderBuffer(TickedObject):
     cxx_class = "gem5::ReorderBuffer"
 
     ROB_depth = Param.Unsigned(8, "Depth of the Reorder buffer")
+    MDU_depth = Param.Unsigned(8, "Depth of the MDU buffer")

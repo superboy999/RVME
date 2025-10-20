@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2025-04-07 01:10:43
- * @LastEditTime: 2025-04-07 01:35:26
+ * @LastEditTime: 2025-05-13 12:13:45
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/tests/cwq/dataflow/256x64x512.c
@@ -27,9 +27,17 @@ int main()
 
     for (uint32_t m = 0; m < 16; m++){
         for (uint32_t n = 0; n < 4; n++){
+            mldb_m4((uint64_t *)C[m][n][0][0][0], 32);
+            mldb_m5((uint64_t *)C[m][n][0][0][0], 32);
+            mldb_m6((uint64_t *)C[m][n][0][0][0], 32);
+            mldb_m7((uint64_t *)C[m][n][0][0][0], 32);
             for (uint32_t c = 0; c < 16; c++){
-                                        inner_mmul(A[m][0][0][c][0], B[0][n][c][0][0]);
+                inner_mmul(A[m][0][0][c][0], B[0][n][c][0][0]);
             }
+            mstb(4, (uint64_t *)C[m][n][0][0][0], 32);
+            mstb(5, (uint64_t *)C[m][n][0][0][0], 32);
+            mstb(6, (uint64_t *)C[m][n][0][0][0], 32);
+            mstb(7, (uint64_t *)C[m][n][0][0][0], 32);
         }
     }
 

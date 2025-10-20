@@ -1,0 +1,9 @@
+Import('*')
+
+if not env['CONF']['BUILD_MATRIX_ENGINE']:
+    Return()
+
+SimObject('ew_unit.py', sim_objects=['ElementwiseUnit'])
+Source('ew_unit.cc')
+
+DebugFlag('ElementwiseUnit')

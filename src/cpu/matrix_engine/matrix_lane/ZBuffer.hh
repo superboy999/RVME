@@ -48,11 +48,15 @@ public:
     // void receive_data(uint8_t data, uint32_t coordinate_x, uint32_t coordinate_y, uint8_t offset); //default is int8
     // void receive_data(int8_t data, uint32_t coordinate_x, uint32_t coordinate_y, uint8_t offset);
 
-    void receive_data(uint8_t data, uint32_t coordinate_x, uint32_t coordinate_y); //default is int8
-    void receive_data(int8_t data, uint32_t coordinate_x, uint32_t coordinate_y);
+    void receive_data(uint32_t data, uint32_t coordinate_x, uint32_t coordinate_y); //default is int8
+    void receive_data(int32_t data, uint32_t coordinate_x, uint32_t coordinate_y);
 
     void send_data(uint8_t dstReg_idx); // FIXME: send to mmu? answer is no!
     void send_req();
+
+    std::array<uint32_t, 8> send2EWU_u();
+    std::array<int32_t, 8> send2EWU_s();
+    void send2EWU_req();
 
     //status function
     bool isBusy();
@@ -65,8 +69,8 @@ private:
     // control signal or wire
     bool isSigned = false;
     uint64_t data_size;// used to decide how many the ports will be active.同样也是这个buffer在这个matrix尺寸下，该容纳的数据量
-    uint64_t column_size;// row and column
-    uint64_t row_size;
+    uint64_t column_size;// how many columns
+    uint64_t row_size; // how many rows
     
     //python configuration
     uint64_t buffer_depth;
@@ -85,18 +89,19 @@ private:
 
     // std::vector<std::deque<std::array<uint8_t, 4>>> unsigned_data_temp;
     // std::vector<std::deque<std::array<int8_t, 4>>> signed_data_temp;   
-    std::vector<std::deque<uint8_t>> unsigned_data_temp;
-    std::vector<std::deque<int8_t>> signed_data_temp;   
+    std::vector<std::deque<uint32_t>> unsigned_data_temp;
+    std::vector<std::deque<int32_t>> signed_data_temp;   
 
     // register
     // std::vector<std::deque<std::array<uint8_t, 4>>> unsigned_buffer;
     // std::vector<std::deque<std::array<int8_t, 4>>> signed_buffer;
-    std::vector<std::deque<uint8_t>> unsigned_buffer;
-    std::vector<std::deque<int8_t>> signed_buffer;
+    std::vector<std::deque<uint32_t>> unsigned_buffer;
+    std::vector<std::deque<int32_t>> signed_buffer;
     bool data_ready;
     bool busy; //equals !empty
     bool full;
     bool sendReq;
+    bool send2EWUReq;
     uint8_t send_cnt;
     uint8_t dstReg_idx;
 };

@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2024-06-19 19:58:37
- * @LastEditTime: 2024-07-09 17:13:16
+ * @LastEditTime: 2025-10-18 00:25:56
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/src/cpu/matrix_engine/scoreboard/matrix_scoreboard.hh
@@ -91,11 +91,16 @@ public:
     uint8_t get_cfg_sizeM() const {return _sizeM;}
     uint16_t get_cfg_sizeK() const {return _sizeK;}
 
+    uint8_t ms1 = 0;
+    uint8_t ms2 = 0;
+    uint8_t ms3 = 0;
+    uint8_t md = 0;
+
 private:
     uint16_t renamed_src1;
     uint16_t renamed_src2;
     uint16_t renamed_src3;
-    uint16_t old_dst;
+    uint16_t old_dst = 99; //不专门设置old_dst的话，默认为99，不需要在rob中set old dst free.
     uint16_t dst_lrf_num;
     uint16_t dst_prf_num;
     uint16_t rob_entry;
@@ -112,11 +117,18 @@ private:
     uint16_t _sizeK;
 public:
     RiscvISA::RiscvMatrixInst *_minst;
-    bool isIssue; //control signal of the matrix lane
-    bool isDone; // control signal of the matrix lane
-    bool isSent; // control signal of inst in memory_queue
-    bool isSendAndWait; //以及开始去从memory获取或者向memory存数据了，但还没有真正的更新到寄存器中或者memory中。
-    uint8_t lane_idx; //record which lane is executing this inst
+    bool canIssue = false; //control signal of the matrix lane
+    bool isIssue = false; //control signal of the matrix lane
+    bool isDone = false; // control signal of the matrix lane
+    bool isSent = false; // control signal of inst in memory_queue
+    bool isSendAndWait = false; //以及开始去从memory获取或者向memory存数据了，但还没有真正的更新到寄存器中或者memory中。
+    uint8_t lane_idx = 0; //record which lane is executing this inst
+    uint8_t ewu_idx = 0; //record which ewu is executing this inst
+
+    uint32_t dst_memdep_idx = 0; // record the tail of mdtable when setting the md entry, and RAW is solved when memdep_idx equals to the mdtable head.
+    uint32_t src1_memdep_idx = 0;
+    uint32_t src2_memdep_idx = 0;
+    uint32_t src3_memdep_idx = 0;
 };
 }//namespace gem5
 

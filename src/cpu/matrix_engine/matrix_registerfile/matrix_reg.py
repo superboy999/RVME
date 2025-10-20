@@ -6,7 +6,8 @@ class MatrixRF(ClockedObject):
     cxx_header = "cpu/matrix_engine/matrix_registerfile/matrix_reg.hh"
     cxx_class = "gem5::MatrixRF"
 
-    physicReg_num = Param.Unsigned(16, "Physical Register Number")
+    tileReg_num = Param.Unsigned(16, "Tile Register Number")
+    accReg_num = Param.Unsigned(16, "Accumulator Register Number")
     regWidth = Param.Unsigned("Register data width")
     bank_num = Param.Unsigned("Register Bank Number")
     bank_depth = Param.Unsigned("Register Bank Depth")

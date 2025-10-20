@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2025-04-09 22:07:50
- * @LastEditTime: 2025-04-27 23:55:09
+ * @LastEditTime: 2025-05-13 19:07:45
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/tests/cwq/dataflow/128x2048x512.c
@@ -42,12 +42,20 @@ int main()
         for (uint32_t n = 0; n < 11; n++){
                 for (uint32_t a = 0; a < 8; a++){
                     for (uint32_t b = 0; b < 12; b++){
-                                for (uint32_t z = 0; z < 16; z++){
-                                        inner_mmul(A[0][0][a][0][0][z][0], B[0][n][0][b][z][0][0]);
-                                        // for (uint32_t a = 1; a < 2; a++){
-                                        //     inner_mmul(A[m][k][x][z][a], B[k][n][z][y][a]);
-                                        // }
-                                    }
+                        mldb_m4((uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        mldb_m5((uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        mldb_m6((uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        // mldb_m7((uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        for (uint32_t z = 0; z < 16; z++){
+                                inner_mmul(A[0][0][a][0][0][z][0], B[0][n][0][b][z][0][0]);
+                                // for (uint32_t a = 1; a < 2; a++){
+                                //     inner_mmul(A[m][k][x][z][a], B[k][n][z][y][a]);
+                                // }
+                            }
+                        mstb(4, (uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        mstb(5, (uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        mstb(6, (uint64_t *)C[0][n][a][b][0][0][0], 32);
+                        mstb(7, (uint64_t *)C[0][n][a][b][0][0][0], 32);             
                     }
                 }
     }

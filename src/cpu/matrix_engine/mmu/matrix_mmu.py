@@ -13,4 +13,4 @@ class MatrixMMU(ClockedObject):
     r_channel = Param.Unsigned(1, "Matrix Memory Read Channel")
     pending_depth = Param.Unsigned("Matrix MMU Pending Queue depth")
     matrix_mem_ports = VectorRequestPort("Matrix Accelerator Memory Port")
-    # o3cpu = Param.BaseO3CPU("Host CPU O3 ")
+    # o3cpu = Param.BaseO3CPU("Host CPU O3 ")·

@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2025-04-03 17:11:42
- * @LastEditTime: 2025-04-05 13:05:23
+ * @LastEditTime: 2025-05-13 11:24:42
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/tests/cwq/dataflow/3136x64x64.c
@@ -32,14 +32,23 @@ int main()
                     for (uint32_t b = 0; b < 1; b++){
                         for (uint32_t c = 0; c < 1; c++){
                             for (uint32_t y = 0; y < 4; y++){
+                                mldb_m4((uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mldb_m5((uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mldb_m6((uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mldb_m7((uint64_t *)C[m][n][a][b][0][y][0], 32);
                                 for (uint32_t z = 0; z < 2; z++){
                                     for (uint32_t x = 0; x < 1; x++){
+
                                         inner_mmul(A[m][k][a][c][x][z][0], B[k][n][c][b][z][y][0]);
                                         // for (uint32_t a = 1; a < 2; a++){
                                         //     inner_mmul(A[m][k][x][z][a], B[k][n][z][y][a]);
                                         // }
                                     }
                                 }
+                                mstb(4, (uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mstb(5, (uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mstb(6, (uint64_t *)C[m][n][a][b][0][y][0], 32);
+                                mstb(7, (uint64_t *)C[m][n][a][b][0][y][0], 32);
                             }
                         }
                     }

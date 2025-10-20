@@ -1,4 +1,13 @@
 /*
+ * @Author: superboy
+ * @Date: 2025-05-13 18:33:18
+ * @LastEditTime: 2025-05-13 18:33:18
+ * @LastEditors: superboy
+ * @Description: 
+ * @FilePath: /gem5-rvm/src/cpu/o3/limits.hh
+ * 
+ */
+/*
  * Copyright 2021 Google Inc.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +43,7 @@ namespace gem5
 namespace o3
 {
 
-static constexpr int MaxWidth = 12;
+static constexpr int MaxWidth = 16;
 static constexpr int MaxThreads = 4;
 
 } // namespace o3

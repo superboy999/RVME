@@ -90,6 +90,7 @@ public:
     // MatrixRF* matrix_reg;//FIXME: Add this later!
     MatrixEngine* matrix_engine;
     // ScoreBoard_Entry* matrix_sbe;
+    uint8_t lane_idx; // record which lane is this!
 private:
     //To simulate one cycle delay
     std::vector<std::queue<uint8_t>> unsigned_xdata_temp;

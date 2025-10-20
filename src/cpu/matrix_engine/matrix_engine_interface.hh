@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2024-08-22 02:49:37
- * @LastEditTime: 2024-08-24 19:59:25
+ * @LastEditTime: 2025-10-13 21:04:19
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/src/cpu/matrix_engine/matrix_engine_interface.hh
@@ -23,6 +23,7 @@
 #include "base/types.hh"
 #include "cpu/matrix_engine/matrix_engine.hh"
 #include "cpu/matrix_engine/dispatcher/matrix_dispatcher.hh"
+#include "cpu/matrix_engine/inst_buf/inst_buf.hh"
 #include "params/MatrixEngineInterface.hh"
 #include "sim/sim_object.hh"
 #include "cpu/thread_context.hh"
@@ -59,18 +60,25 @@ public:
     // void loadstoreMatrix(RiscvISA::RiscvMatrixInst *minst, ThreadContext *tc, uint64_t src1, uint64_t src2, std::function<void()> done_callback);
     void loadstoreMatrix(RiscvISA::RiscvMatrixInst *minst, ThreadContext *tc, uint64_t src1_value, uint64_t src2_value);
     void set_cpu_ptr(gem5::o3::CPU* _o3cpu);
+    void set_engine_interface_ptr(MatrixEngine* _matrix_engine, MatrixEngineInterface* _matrix_interface);
     void regStats() override;
     bool busy();
-
+    bool isBlocked(); // once it has been blocked, none matrix mem inst can be offload from matrix engine, but for arith and config are ok.
+    void setBlockStatus(bool status);
+    void mzeroCmd(RiscvISA::RiscvMatrixInst *minst);
 // private:
 public:
     MatrixEngine *matrix_engine;
+    InstructionBuffer *inst_buffer;
     gem5::o3::CPU* o3cpu;
     // MatrixDispatcher *matrix_dispatcher;
 
     statistics::Scalar matrix_config_inst;
     statistics::Scalar matrix_arith_inst;
     statistics::Scalar matrix_mem_inst;
+    statistics::Scalar matrix_mzero;
+private:
+    bool blocked = false;
 };
 
 } //namespace gem5

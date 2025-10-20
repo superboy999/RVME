@@ -12,7 +12,7 @@
 
 #include <cassert>
 #include <cstdint>
-
+#include <array>
 namespace gem5
 {
     ZBuffer::ZBuffer(const ZBufferParams &params):
@@ -29,6 +29,7 @@ namespace gem5
     busy = false; 
     full = false;
     sendReq = false;
+    send2EWUReq = false;
     send_cnt = 0;
 }
 
@@ -79,7 +80,7 @@ uint64_t ZBuffer::get_signed_size()
     return signed_buffer[0].size();
 }
 
-void ZBuffer::receive_data(uint8_t data, uint32_t coordinate_x, uint32_t coordinate_y)
+void ZBuffer::receive_data(uint32_t data, uint32_t coordinate_x, uint32_t coordinate_y)
 {
     // assert(!full);
     // if(offset == 0){
@@ -94,13 +95,14 @@ void ZBuffer::receive_data(uint8_t data, uint32_t coordinate_x, uint32_t coordin
     // isSigned = false;
     assert(!full);
     unsigned_data_temp[coordinate_x].push_back(data);
+    DPRINTF(ZBuffer, "zbuffer receive data = %d, from x = %d\n", data, coordinate_x);
     write_to_ZBuffer++;
     unsigned_writeRequest[coordinate_x] = true;
     isSigned = false;
     data_ready = true;
 }
 
-void ZBuffer::receive_data(int8_t data, uint32_t coordinate_x, uint32_t coordinate_y)
+void ZBuffer::receive_data(int32_t data, uint32_t coordinate_x, uint32_t coordinate_y)
 {
     // assert(!full);
     // if(offset == 0){
@@ -119,7 +121,7 @@ void ZBuffer::receive_data(int8_t data, uint32_t coordinate_x, uint32_t coordina
     // isSigned = true;
     assert(!full);
     signed_data_temp[coordinate_x].push_back(data);
-    DPRINTF(ZBuffer, "zbuffer receive data = %d, from y = %d\n", data, coordinate_x);
+    DPRINTF(ZBuffer, "zbuffer receive data = %d, from x = %d\n", data, coordinate_x);
     write_to_ZBuffer++;
     signed_writeRequest[coordinate_x] = true;
     isSigned = true;
@@ -137,7 +139,7 @@ void ZBuffer::send_data(uint8_t dstReg_idx)
         std::cerr << "Error: Uninitialized matrix engine or register." <<       std::endl;
         return;
     }
-
+    std::array<uint32_t, 8> toEWU = {0};
     for(uint8_t i = 0; i < column_size; i++){
             if(isSigned){
                 matrix_engine->matrix_reg->wtreg_byte(dstReg_idx, send_cnt%matrix_engine->matrix_reg->bank_num, send_cnt/matrix_engine->matrix_reg->bank_num, i, signed_buffer[i].front());
@@ -162,6 +164,50 @@ void ZBuffer::send_req()
     sendReq = true;
 }
 
+void ZBuffer::send2EWU_req() //这个应该是在zbuffer eval里面调用的
+{
+    assert(!send2EWUReq);
+    send2EWUReq = true;
+   if(matrix_engine->ew_unit->isIdle() == true){
+        matrix_engine->ew_unit->startTicking();
+    }
+    matrix_engine->ew_unit->acc_req(dstReg_idx, row_size, matrix_lane->lane_idx, isSigned);
+}
+
+std::array<uint32_t, 8> ZBuffer::send2EWU_u() //这个返回值具体操作还是在EWU里面进行吧
+{
+    std::array<uint32_t, 8> data_out = {0};
+    // assert(!read_from_ZBuffer);
+    // assert(matrix_engine->ew_unit);
+    read_from_ZBuffer++;
+    for(uint8_t i = 0; i < column_size; i++){
+        assert(!unsigned_buffer[i].empty());
+        data_out[i] = unsigned_buffer[i].front();
+        unsigned_buffer[i].pop_front();
+    }
+    send_cnt = send_cnt + 1;
+    DPRINTF(ZBuffer, "ZBuffer send to EWU data: %d, %d, %d, %d, %d, %d, %d, %d\n", data_out[0], data_out[1], data_out[2], data_out[3], data_out[4], data_out[5], data_out[6], data_out[7]);
+    return data_out;
+}
+
+std::array<int32_t, 8> ZBuffer::send2EWU_s() //这个返回值具体操作还是在EWU里面进行吧
+{
+    std::array<int32_t, 8> data_out = {0};
+    // assert(!read_from_ZBuffer);
+    // assert(matrix_engine->ew_unit);
+    read_from_ZBuffer++;
+    for(uint8_t i = 0; i < column_size; i++){
+        if(isSigned){
+            assert(!signed_buffer[i].empty());
+            data_out[i] = signed_buffer[i].front();
+            signed_buffer[i].pop_front();
+        } 
+    }
+    send_cnt = send_cnt + 1;
+    DPRINTF(ZBuffer, "ZBuffer send to EWU data: %d, %d, %d, %d, %d, %d, %d, %d\n", data_out[0], data_out[1], data_out[2], data_out[3], data_out[4], data_out[5], data_out[6], data_out[7]);
+    return data_out;
+}
+
 void ZBuffer::stopTicking()
 {
     DPRINTF(ZBuffer, "ZBuffer stop working!\n");
@@ -183,14 +229,15 @@ bool ZBuffer::isFull()
 void ZBuffer::evaluate()
 {
     // Stage1: process send data first!
-    if(sendReq){
-        send_data(dstReg_idx);
+    if(send2EWUReq){
+        // send_data(dstReg_idx);
         data_ready = false;
         if(send_cnt == row_size){
             //send finish
-            sendReq = false;
+            send2EWUReq = false;
             send_cnt = 0;
-            matrix_engine->matrix_reg->rls_wrport();
+            // matrix_engine->matrix_reg->rls_wrport(dstReg_idx, 0, send_cnt);
+            // matrix_engine->matrix_reg->occupy_rdport(dstReg_idx, 0, send_cnt);
             // stopTicking();
             busy = false;
         }
@@ -199,14 +246,28 @@ void ZBuffer::evaluate()
     if(isSigned){
         for (uint32_t i = 0; i < data_size; i++){
             if(signed_writeRequest[i]){
+                assert(signed_data_temp[i].size() != 0);
+                DPRINTF(ZBuffer, "signed_data_temp[%d].front() = %d\n", i, signed_data_temp[i].front());
+                if(!signed_buffer[i].empty()){
+                    DPRINTF(ZBuffer, "before push signed_buffer[%d].front() = %d\n", i, signed_buffer[i].front());
+                }
+                DPRINTF(ZBuffer, "signed_data_temp.size = %d, signed_buffer.size = %d\n", signed_data_temp[i].size(), signed_buffer[i].size());
                 signed_buffer[i].push_back(signed_data_temp[i].front());
+                DPRINTF(ZBuffer, "after push signed_buffer[%d].front() = %d\n", signed_buffer[i].front());
                 signed_data_temp[i].pop_front();
             }
         }
     } else {
         for (uint32_t i = 0; i < data_size; i++){
             if(unsigned_writeRequest[i]){
+                assert(unsigned_data_temp[i].size() != 0);
+                DPRINTF(ZBuffer, "unsigned_data_temp[%d].front() = %u\n", i, unsigned_data_temp[i].front());
+                if(!unsigned_buffer[i].empty()){
+                    DPRINTF(ZBuffer, "before push unsigned_buffer[%d].front() = %u\n", i, unsigned_buffer[i].front());
+                }
+                DPRINTF(ZBuffer, "unsigned_data_temp.size = %u, unsigned_buffer.size = %u\n", unsigned_data_temp[i].size(), unsigned_buffer[i].size());
                 unsigned_buffer[i].push_back(unsigned_data_temp[i].front());
+                DPRINTF(ZBuffer, "after push unsigned_buffer[%d].front() = %u\n", i, unsigned_buffer[i].front());
                 unsigned_data_temp[i].pop_front();
             }
         }        
@@ -223,11 +284,14 @@ void ZBuffer::evaluate()
     // } else {
     //     data_ready = (unsigned_buffer[0].size() == row_size);
     // }
-    if(data_ready&&matrix_engine->matrix_reg->occupy_wtport()){
+    if(data_ready&&matrix_engine->matrix_reg->occupy_wtport(dstReg_idx, 0, send_cnt)&&matrix_engine->matrix_reg->occupy_rdport(dstReg_idx, 0, send_cnt)){
     // if(data_ready){
-        send_req();
+        // send_req();
+        if(signed_writeRequest[0] || unsigned_writeRequest[0]){
+            send2EWU_req();
+        }
     }
-    //Stage4: reset signal
+    //Stage4: reset signals
     if(isSigned){
         for (uint32_t i = 0; i < data_size; i++){
             signed_writeRequest[i] = false;

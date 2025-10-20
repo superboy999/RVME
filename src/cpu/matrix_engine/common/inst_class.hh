@@ -1,7 +1,7 @@
 /*
  * @Author: superboy
  * @Date: 2025-03-17 01:19:14
- * @LastEditTime: 2025-03-17 01:28:35
+ * @LastEditTime: 2025-10-18 20:05:01
  * @LastEditors: superboy
  * @Description: 
  * @FilePath: /gem5-rvm/src/cpu/matrix_engine/common/inst_class.hh
@@ -41,6 +41,16 @@ public:
         uint8_t num_row;
     };
 
+    enum EW_OP
+    {
+        MADD,
+        MSUB,
+        MMUL,
+        MMAX,
+        MMIN,
+        MSHITFTR,
+        MSHITFTL
+    };
     // struct MatrixRLEN
     // {
     //     std::bitset<matrix_RLEN> bits;
@@ -77,6 +87,17 @@ public:
     uint32_t exe_num;
 
     bool instDone = false; //only for lane to check if this instruction is done!
+
+    uint8_t lane_idx; //record which lane is executing this inst
+    uint8_t ewu_idx; //record which ewu is executing this inst
+
+    void lane_reset(){
+        load_cnt = 0;
+        exe_num = 0;
+        load_done = false;
+        executed = false;
+        instDone = false;
+    }
 private:
     uint64_t matrix_RLEN = 256; //FIXME: Maybe be can be configured by python later!!
 };

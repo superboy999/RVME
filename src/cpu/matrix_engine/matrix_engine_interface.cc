@@ -15,9 +15,11 @@
 namespace gem5
 {
 
-MatrixEngineInterface::MatrixEngineInterface(const MatrixEngineInterfaceParams &params) : SimObject(params), matrix_engine(params.matrix_engine)
+MatrixEngineInterface::MatrixEngineInterface(const MatrixEngineInterfaceParams &params) : SimObject(params), matrix_engine(params.matrix_engine), inst_buffer(params.inst_buffer)
 {
     matrix_engine->set_cpu_ptr(o3cpu);
+    // inst_buffer->set_cpu_ptr(o3cpu);
+    // inst_buffer->set_engine_interface_ptr(matrix_engine, this);
 }
 
 MatrixEngineInterface::~MatrixEngineInterface(){}
@@ -34,6 +36,9 @@ void MatrixEngineInterface::regStats()
     matrix_mem_inst
         .name(name() + ".numMatrixMemInst")
         .desc("Count Memory Instructions");
+    matrix_mzero
+        .name(name() + ".numMatrixMzeroInst")
+        .desc("Count Mzero Instructions");
 }
 
 bool MatrixEngineInterface::requestGrant(RiscvISA::RiscvMatrixInst* insn)
@@ -43,6 +48,14 @@ bool MatrixEngineInterface::requestGrant(RiscvISA::RiscvMatrixInst* insn)
     DPRINTF(MatrixEngineInterface, " Requesting a grant with answer: %d\n", grant);
     return grant;
 }
+
+// bool MatrixEngineInterface::requestGrant(RiscvISA::RiscvMatrixInst* insn)
+// {
+//     //FIXME:这个貌似要改成dispatchGrant的那个函数
+//     bool grant = matrix_engine->inst_buffer->isFull();
+//     DPRINTF(MatrixEngineInterface, " Requesting a grant with answer: %d\n", grant);
+//     return grant;
+// }
 
 bool MatrixEngineInterface::requestGrant_withoutReg(RiscvISA::RiscvMatrixInst* insn)
 {
@@ -80,6 +93,19 @@ void MatrixEngineInterface::configMatrix(RiscvISA::RiscvMatrixInst *minst, Threa
     matrix_config_inst++;
 }
 
+void MatrixEngineInterface::mzeroCmd(RiscvISA::RiscvMatrixInst *minst)
+{
+    DPRINTF(MatrixEngineInterface, "Sending a Mzero command to the matrix engine\n");
+    if(!matrix_engine->matrix_dispatcher->isOccupied()){
+        matrix_engine->matrix_dispatcher->startTicking();
+    }
+    ScoreBoard_Entry* sbe = new ScoreBoard_Entry();
+    sbe->set_MatrixStaticInst(minst);
+    matrix_engine->matrix_dispatcher->renameMatrixInst(*minst, sbe); //here is just to simplify the code logic.
+    matrix_engine->matrix_dispatcher->recvMzero(sbe);
+    matrix_mzero++;
+}
+
 void MatrixEngineInterface::loadstoreMatrix(RiscvISA::RiscvMatrixInst *minst, ThreadContext *tc, uint64_t src1_value, uint64_t src2_value)
 {
     DPRINTF(MatrixEngineInterface, "Sending a LoadStore command to the matrix engine\n");
@@ -108,13 +134,25 @@ void MatrixEngineInterface::set_cpu_ptr(gem5::o3::CPU* _o3cpu)
 {
     o3cpu = _o3cpu;
     matrix_engine->set_cpu_ptr(o3cpu);
+    inst_buffer->set_cpu_ptr(o3cpu);
+    inst_buffer->set_engine_interface_ptr(matrix_engine, this);
 }
 
-// FIXMEcwq: maybe it should be integrated into python script
-// MatrixEngineInterface *
-// MatrixEngineInterfaceParams::create()
+bool MatrixEngineInterface::isBlocked()
+{
+    return blocked;
+}
+
+void MatrixEngineInterface::setBlockStatus(bool status)
+{
+    blocked = status;
+}
+
+// void MatrixEngineInterface::set_engine_interface_ptr(MatrixEngine* _matrix_engine, MatrixEngineInterface* _matrix_interface)
 // {
-//     return new MatrixEngineInterface(this);
+//     matrix_engine = _matrix_engine;
+//     matrix_interface = _matrix_interface;
+//     // inst_buffer->set_engine_interface_ptr(matrix_engine, matrix_interface);
 // }
 
-}
+} //namespace gem5
