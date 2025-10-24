@@ -7,11 +7,26 @@
  * @FilePath: /gem5-rvm/README.md
  * 
 -->
-# gem5-rvm
-This repo is based on gem5 simulator, to model the risc-v matrix engine.
-Later, we will release the new version of matrix engine which supports Xuantie MME v0.6.
+# GEM5-RVME
+This repo is based on gem5 simulator, to provide the detail microarchitecture model of RVME.
+Now RVME supports the main instructions metioned in Xuantie MME v0.3. Later in this year, we will release the new version of matrix engine which supports Xuantie MME v0.6.
+## How to use
+1. Build environment, pull gem5 docker.
+``` shell
+docker pull ghcr.io/gem5/ubuntu-22.04_all-dependencies:latest
+```
+2. Compile RVME model.
+``` shell
+scons build/RISCV/gem5.debug -j 80  // .opt will also be fine, even faster. 80 can be changed to actual hardware thread you can use.
+```
+3. Runing test on RVME in debugging mode.(By GDB)
+``` shell
+gdb build/RISCV/gem5.debug
+run --debug-flags=<add some flags of modules that you want to debug> configs/example/riscv_matrix_engine.py 
+```
 
-# Change Log
+
+## Change Log
 - 2023/11/20
 1. Modified **build_opts/RISCV**, add simulation options
 
