@@ -8,7 +8,9 @@
  * 
 -->
 # GEM5-RVME
-This repo is based on gem5 simulator, to provide the detail microarchitecture model of RVME.
+This repository is based on the gem5 simulator and provides a detailed microarchitectural model of RVME, as described in our paper accepted by ICCD 2025, titled “RVME: An Efficient Matrix Engine Design Based on Matrix Extension of RISC-V.”
+
+
 Now RVME supports the main instructions metioned in Xuantie MME v0.3. Later in this year, we will release the new version of matrix engine which supports Xuantie MME v0.6.
 ## How to use
 1. Build environment, pull gem5 docker.
