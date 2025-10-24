@@ -1,0 +1,3 @@
+[submodule "gcc_toolchain"]
+	path = gcc_toolchain
+	url = https://github.com/superboy999/Xuantie-gcc-elf-newlib-x86_64
