@@ -1,0 +1,12 @@
+import sys
+
+Import('*')
+
+# if not env['CONF']['BUILD_MATRIX_ENGINE']:
+#     Return()
+
+SimObject('../Transpose_Unit.py', sim_objects=['TransposeUnit'])
+
+Source('Transpose_Unit.cc')
+
+DebugFlag('Transpose_Unit')

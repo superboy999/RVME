@@ -1,0 +1,9 @@
+Import('*')
+
+# if not env['CONF']['BUILD_MATRIX_ENGINE']:
+#     Return()
+
+SimObject('inst_buf.py', sim_objects=['InstructionBuffer'])
+Source('inst_buf.cc')
+
+DebugFlag('InstructionBuffer')

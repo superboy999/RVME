@@ -1,0 +1,11 @@
+import sys
+Import("*")
+
+SimObject('matrix_dma.py', sim_objects=['MatrixDmaDevice'])
+SimObject('matrix_spm.py', sim_objects=['MatrixSPM'])
+Source('matrix_spm.cc')
+Source('matrix_dma.cc')
+DebugFlag('MatrixSPM')
+DebugFlag('SPMBank')
+DebugFlag('MatrixDMA')
+DebugFlag('MatrixDMAPort')

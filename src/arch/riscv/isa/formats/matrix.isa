@@ -1,0 +1,95 @@
+def format MatrixConfIOp(code, *flags) {{
+    imm_code = """
+                uimm = MIMM10;
+               """
+    iop = InstObjParams(name, Name, 'RiscvMatrixConfIOp', {'code': code, 'imm_code': imm_code}, flags)
+    header_output = MatrixConfIDeclare.subst(iop)
+    decoder_output = MatrixConfIConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixConfOp(code, *flags) {{
+    regs = ['srcRegIdx(0)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixConfOp', {'code': code, 'regs': ','.join(regs)}, flags)
+    header_output = MatrixConfDeclare.subst(iop)
+    decoder_output = MatrixConfConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixMultiplyOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixMultiplyOp', {'code': code}, flags)
+    header_output = MatrixMultiplyDeclare.subst(iop)
+    decoder_output = MatrixMultiplyConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixLutOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixLutOp', {'code': code}, flags)
+    header_output = MatrixLutDeclare.subst(iop)
+    decoder_output = MatrixLutConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+
+def format MatrixRedcOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixRedcOp', {'code': code}, flags)
+    header_output = MatrixRedcDeclare.subst(iop)
+    decoder_output = MatrixRedcConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixZeroOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixZeroOp', {'code': code}, flags)
+    header_output = MatrixZeroDeclare.subst(iop)
+    decoder_output = MatrixZeroConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixMoveOp(code, *flags) {{
+    regs = ['srcRegIdx(0)', 'srcRegIdx(1)', 'destRegIdx(0)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixMoveOp', {'code': code, 'regs': ','.join(regs)}, flags)
+    header_output = MatrixMoveDeclare.subst(iop)
+    decoder_output = MatrixMoveConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixElementwiseOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixElementwiseOp', {'code': code}, flags)
+    header_output = MatrixElementwiseDeclare.subst(iop)
+    decoder_output = MatrixElementwiseConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixLoadOp(code, *flags) {{
+    regs = ['srcRegIdx(0)', 'srcRegIdx(1)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixLoadOp', {'code': code,'regs': ','.join(regs)}, flags)
+    header_output = MatrixLoadDeclare.subst(iop)
+    decoder_output = MatrixLoadConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixStoreOp(code, *flags) {{
+    regs = ['srcRegIdx(0)', 'srcRegIdx(1)']
+    iop = InstObjParams(name, Name, 'RiscvMatrixStoreOp', {'code': code,'regs': ','.join(regs)}, flags)
+    header_output = MatrixStoreDeclare.subst(iop)
+    decoder_output = MatrixStoreConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};
+
+def format MatrixSyncOp(code, *flags) {{
+    iop = InstObjParams(name, Name, 'RiscvMatrixSyncOp', {'code': code}, flags)
+    header_output = MatrixConfDeclare.subst(iop)
+    decoder_output = MatrixConfConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = MatrixExecute.subst(iop)
+}};

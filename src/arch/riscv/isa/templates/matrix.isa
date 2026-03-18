@@ -1,0 +1,315 @@
+def template MatrixConfIDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixConfIConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        %(imm_code)s;
+    }
+}};
+
+def template MatrixConfDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[1]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixConfConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+        setSrcRegIdx(_numSrcRegs++, intRegClass[mrs1()]);
+    }
+}};
+
+def template MatrixMultiplyDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixMultiplyConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+def template MatrixLutDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixLutConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+def template MatrixRedcDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixRedcConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+def template MatrixZeroDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixZeroConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+def template MatrixMoveDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[2]; RegId destRegIdxArr[1];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixMoveConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+        if (mfunct4() == 2) {
+            setSrcRegIdx(_numSrcRegs++, intRegClass[mrs1()]);
+            setDestRegIdx(_numDestRegs++, intRegClass[mrd()]);
+        }
+        else if (mfunct4() == 3) {
+            setSrcRegIdx(_numSrcRegs++, intRegClass[mrs1()]);
+            setSrcRegIdx(_numSrcRegs++, intRegClass[mrs2()]);
+        }
+        else {
+
+        }
+    }
+}};
+
+def template MatrixElementwiseDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixElementwiseConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+def template MatrixLoadDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[2]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixLoadConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+        setSrcRegIdx(_numSrcRegs++, intRegClass[mrs1()]);
+        setSrcRegIdx(_numSrcRegs++, intRegClass[mrs2()]);
+    }
+}};
+
+def template MatrixStoreDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[2]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixStoreConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+        setSrcRegIdx(_numSrcRegs++, intRegClass[mrs1()]);
+        setSrcRegIdx(_numSrcRegs++, intRegClass[mrs2()]);
+    }
+}};
+
+def template MatrixSyncDeclare {{
+
+    class %(class_name)s : public %(base_class)s
+    {
+      private:
+        RegId srcRegIdxArr[0]; RegId destRegIdxArr[0];
+
+      public:
+        /// Constructor.
+        %(class_name)s(ExtMachInst machInst);
+        Fault execute(ExecContext *, trace::InstRecord *) const override;
+        using %(base_class)s::generateDisassembly;
+    };
+}};
+
+def template MatrixSyncConstructor{{
+    %(class_name)s::%(class_name)s(ExtMachInst machInst)
+        : %(base_class)s("%(mnemonic)s", machInst,  %(op_class)s)
+    {
+        %(set_reg_idx_arr)s;
+        %(constructor)s;
+        _numSrcRegs = 0;
+        _numDestRegs = 0;
+    }
+}};
+
+// Basic instruction class execute method template.
+def template MatrixExecute{{
+    Fault
+    %(class_name)s::execute(
+        ExecContext *xc, trace::InstRecord *traceData) const
+    {
+        %(op_decl)s;
+        %(op_rd)s;
+        %(code)s;
+        %(op_wb)s;
+        panic("Matrix instruction had it's execute() called!");
+        return NoFault;
+    }
+}};

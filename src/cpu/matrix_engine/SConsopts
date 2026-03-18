@@ -1,0 +1,3 @@
+Import('*')
+
+import gem5_scons
