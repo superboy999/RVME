@@ -1,8 +1,8 @@
 # GEM5-RVME
 This repository is based on the gem5 simulator and provides a detailed microarchitectural model of **RVME**, as described in our paper accepted by ICCD 2025, titled “**RVME: An Efficient Matrix Engine Design Based on Matrix Extension of RISC-V.**”
 
-
 Now RVME supports the main instructions metioned in [toolchain](toolchain/).
+Related SPIKE model can be found in [spike](spike_model/).
 ## How to use
 1. Build environment, pull gem5 docker.
 ``` shell

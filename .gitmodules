@@ -1,3 +1,6 @@
 [submodule "toolchain"]
 	path = toolchain
 	url = git@github.com:superboy999/RVME-toolchain.git
+[submodule "spike_model"]
+	path = spike_model
+	url = git@github.com:superboy999/RVME-SPIKE.git
