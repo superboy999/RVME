@@ -7,6 +7,9 @@
  * @FilePath: /gem5-rvm/README.md
  * 
 -->
+# RVME V0.6 is released!
+You can find this new version simulator and its related tools in new branch: v0.6.
+
 # GEM5-RVME
 This repository is based on the gem5 simulator and provides a detailed microarchitectural model of RVME, as described in our paper accepted by ICCD 2025, titled “RVME: An Efficient Matrix Engine Design Based on Matrix Extension of RISC-V.”
 
