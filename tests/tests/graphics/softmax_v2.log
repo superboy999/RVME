@@ -1,0 +1,72 @@
+Global frequency set at 1000000000000 ticks per second
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:292: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/arch/riscv/linux/se_workload.cc:73: warn: Unknown operating system; assuming Linux.
+system.remote_gdb: Listening for connections on port 7000
+Beginning simulation!
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 2kB will be cast to base 2 size 2KiB.
+warn: Base 10 memory/cache size 128MB will be cast to base 2 size 128MiB.
+warn: Base 10 memory/cache size 256kB will be cast to base 2 size 256KiB.
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+start test!
+[INFO][NORM] max_tile_ij_in_bank_c = 16, tile_I = 8, tile_J = 8
+[DEBUG][NORM] Increase I to 2
+[DEBUG][NORM] Increase I to 3
+[DEBUG][NORM] Increase I to 4
+[DEBUG][NORM] Increase I to 5
+[DEBUG][NORM] Increase I to 6
+[DEBUG][NORM] Increase I to 7
+[DEBUG][NORM] Increase I to 8
+[INFO][NORM] Auto tiling selected: I=8, J=8, act=SOFTMAX
+[INFO][NORM] tile_I: 8
+[INFO][NORM] tile_J: 8
+[INFO][NORM] bankC_used_rows: 512
+[INFO][NORM] Bank C utilization: 25.000000%
+
+[INFO][NORM] Softmax params: qb=88465, qc=63957, qln2=45426, qsln2_inv=-369, qs=256, shift=16, half_shift=8
+[INFO][NORM] Start sp_tiled_norm(): I=8, J=8, C_blocks=2, act=4
+[DEBUG][NORM] Move-in Input
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][SOFTMAX] Get max
+[DEBUG][SOFTMAX] Column reduce max
+[DEBUG][SOFTMAX] Calculate exp and sum
+[DEBUG][SOFTMAX] Normalize
+[DEBUG][NORM] Move-out Output
+end test!
+total operations = 66944
+Exiting @ tick 79783500 because exiting with last active thread context
+gem5 finished Dec 13 2025 21:37:47

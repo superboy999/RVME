@@ -1,0 +1,470 @@
+Global frequency set at 1000000000000 ticks per second
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:292: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/arch/riscv/linux/se_workload.cc:73: warn: Unknown operating system; assuming Linux.
+system.remote_gdb: Listening for connections on port 7000
+Beginning simulation!
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 2kB will be cast to base 2 size 2KiB.
+warn: Base 10 memory/cache size 128MB will be cast to base 2 size 128MiB.
+warn: Base 10 memory/cache size 256kB will be cast to base 2 size 256KiB.
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+start test!
+[INFO][MATMUL] max_tile_ij_in_bank_c = 16, tile_I = 32, tile_J = 96, tile_K = 72
+[DEBUG][MATMUL] Increase K to 2
+[DEBUG][MATMUL] Increase K to 3
+[DEBUG][MATMUL] Increase K to 4
+[DEBUG][MATMUL] Increase K to 5
+[DEBUG][MATMUL] Increase K to 6
+[DEBUG][MATMUL] Increase K to 7
+[DEBUG][MATMUL] Increase K to 8
+[DEBUG][MATMUL] Increase K to 9
+[DEBUG][MATMUL] Increase K to 10
+[DEBUG][MATMUL] Increase K to 11
+[DEBUG][MATMUL] Increase K to 12
+[DEBUG][MATMUL] Increase K to 13
+[DEBUG][MATMUL] Increase K to 14
+[DEBUG][MATMUL] Increase K to 15
+[DEBUG][MATMUL] Increase K to 16
+[INFO][MATMUL] Auto tiling selected: I=16, J=16, K=16, type=OS
+[INFO][MATMUL] tile_I: 16
+[INFO][MATMUL] tile_J: 16
+[INFO][MATMUL] tile_K: 16
+
+[INFO][MATMUL] bankA_used_rows: 2048
+[INFO][MATMUL] bankB_used_rows: 2048
+[INFO][MATMUL] bankC_used_rows: 2048
+[INFO][MATMUL] Bank A utilization: 100.000000%
+[INFO][MATMUL] Bank B utilization: 100.000000%
+[INFO][MATMUL] Bank C utilization: 100.000000%
+
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=16
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+[INFO][MATMUL] Start sp_tiled_matmul_os(): I=16, J=16, K=8
+[INFO][MATMUL] A_blocks = 8, B_blocks = 8, D_blocks = 2, C_blocks = 2
+[DEBUG][MATMUL] Move-in D (bias)
+[DEBUG][MATMUL] Move-in B
+[DEBUG][MATMUL] Move-in A
+[DEBUG][MATMUL] Compute
+[DEBUG][MATMUL] Move-out C
+end test!
+total op = 905969664
+Exiting @ tick 10608602500 because exiting with last active thread context
+gem5 finished Dec 13 2025 21:53:53

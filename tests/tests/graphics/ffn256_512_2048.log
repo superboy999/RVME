@@ -1,0 +1,69 @@
+Global frequency set at 1000000000000 ticks per second
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (8192 Mbytes) does not match the address range assigned (512 Mbytes)
+src/arch/riscv/isa.cc:292: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/arch/riscv/linux/se_workload.cc:73: warn: Unknown operating system; assuming Linux.
+system.remote_gdb: Listening for connections on port 7000
+Beginning simulation!
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 2kB will be cast to base 2 size 2KiB.
+warn: Base 10 memory/cache size 128MB will be cast to base 2 size 128MiB.
+warn: Base 10 memory/cache size 256kB will be cast to base 2 size 256KiB.
+warn: Base 10 memory/cache size 512MB will be cast to base 2 size 512MiB.
+src/sim/simulate.cc:199: info: Entering event queue @ 0.  Starting simulation...
+start test!
+FFN test start...
+SEQ_LEN=256, HIDDEN_DIM=512, EXPANSION_DIM=2048
+[INFO][MATMUL] tile_I: 16
+[INFO][MATMUL] tile_J: 16
+[INFO][MATMUL] tile_K: 16
+
+[INFO][MATMUL] bankA_used_rows: 2048
+[INFO][MATMUL] bankB_used_rows: 2048
+[INFO][MATMUL] bankC_used_rows: 2048
+[INFO][MATMUL] Bank A utilization: 100.000000%
+[INFO][MATMUL] Bank B utilization: 100.000000%
+[INFO][MATMUL] Bank C utilization: 50.000000%
+
+MatMul 1 done.
+[INFO][NORM] tile_I: 2
+[INFO][NORM] tile_J: 256
+[INFO][NORM] bankC_used_rows: 4096
+[INFO][NORM] Bank C utilization: 100.000000%
+
+GELU done.
+[INFO][MATMUL] tile_I: 8
+[INFO][MATMUL] tile_J: 8
+[INFO][MATMUL] tile_K: 32
+
+[INFO][MATMUL] bankA_used_rows: 2048
+[INFO][MATMUL] bankB_used_rows: 2048
+[INFO][MATMUL] bankC_used_rows: 512
+[INFO][MATMUL] Bank A utilization: 100.000000%
+[INFO][MATMUL] Bank B utilization: 100.000000%
+[INFO][MATMUL] Bank C utilization: 12.500000%
+
+MatMul 2 done.
+[INFO][NORM] tile_I: 8
+[INFO][NORM] tile_J: 64
+[INFO][NORM] bankC_used_rows: 4096
+[INFO][NORM] Bank C utilization: 100.000000%
+
+LayerNorm done.
+tile_I: 4
+tile_J: 64
+bankC_used_rows: 4096
+Bank C peak utilization: 100.000000%
+
+ResAdd done.
+FFN test end!
+total operations = 1097412096
+matmul_cnt = 1090519040
+	matadd_cnt 131072
+	norm_v3_cnt = 6761984
+Exiting @ tick 16372484500 because exiting with last active thread context
+gem5 finished Dec 15 2025 21:39:08

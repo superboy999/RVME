@@ -1,0 +1,14 @@
+matmul (M = 256, N = 768, K = 2304)
+    op = 920125440
+layernorm (M = 256, N = 768)
+    op = 1453568
+softmax (M = 128, N = 128)
+    op = 264960
+ffn (SEQ_LEN = 256, HIDDEN_DIM = 768, EXPANSION_DIM = 3072)
+    op = 2463968768
+    matmul_cnt = 2453667840
+    matadd_cnt = 196608 norm_v3_cnt = 10104320
+ffn (SEQ_LEN = 256, HIDDEN_DIM = 512, EXPANSION_DIM = 2048)
+    op = 1097412096
+    matmul_cnt = 1090519040
+    matadd_cnt = 131072 norm_v3_cnt = 6761984
